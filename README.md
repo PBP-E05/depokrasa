@@ -12,6 +12,15 @@ Sebagai mahasiswa di Universitas Indonesia, kami semua memiliki satu masalah yan
 
 DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berbagai jenis makanan atau minuman yang ditemukan di Kota Depok. Tujuan aplikasi ini adalah untuk membantu penduduk lokal dan turis yang datang ke Depok menemukan toko makanan atau minuman tertentu yang mereka cari. Dengan menggunakan aplikasi ini, pengguna dapat dengan mudah menemukan toko atau restoran di Depok yang menjual makanan atau minuman yang beragam, sehingga pengguna dapat menyicipi keberagaman rasa yang ada di Depok.
 
+### Manfaat
+- Temukan kuliner baru
+   - DepokRasa memudahkan pengguna untuk menemukan berbagai macam kuliner baru dan unik di Depok.
+- Cari makanan berdasarkan kategori
+   - Pengguna dapat mencari kuliner berdasarkan kategori yang disediakan. Memudahkan pengguna mencari makanan yang mereka mau.
+- Temukan rekomendasi kuliner
+   - Pengguna dapat menemukan kuliner favorit di Depok dengan menggunakan review dan artikel dalam DepokRasa.
+
+
 ## Modul yang Akan Diimplementasikan
 1. [Authentication](#1-authentication-auth)
 2. [User Dashboard](#2-user-dashboard)
