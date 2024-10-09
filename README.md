@@ -84,6 +84,9 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 - Feedback
 
 ## Sumber Dataset Awal
+1. [Link Google Spreadsheet](https://docs.google.com/spreadsheets/d/1kX3j5mdDwOSw6WzYEg5S7Ls4GGcUpeF5ypGo_OaXc88/edit?hl=id&gid=0#gid=0)
+2. [Gofood Daerah Depok](https://gofood.co.id/jakarta/depok-restaurants)
+3. [PergiKuliner.com Daerah Depok](https://pergikuliner.com/restoran/depok/)
 
 ## Peran Pengguna
 1. **Pengguna Umum**: Pengguna yang dapat menelusuri produk makanan, menambahkan makanan ke keranjang, menandai favorit, dan memberikan ulasan serta peringkat.
