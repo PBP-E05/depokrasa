@@ -25,8 +25,10 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 1. [Authentication](#1-authentication-auth)
 2. [User Dashboard](#2-user-dashboard)
 3. [Menu Management](#3-menu-management)
-7. [Admin Panel](#7-admin-panel)
-8. [Optional Features](#optional-features)
+4. [Admin Panel](#4-admin-panel)
+5. [Information on Promotions and Discounts](#5-information-on-promotions-and-discounts)
+6. [Blog/Articles](#6-blogarticles)
+7. [Feedback and Support](#7-feedback-and-support)
 
 ### 1. Authentication (auth)
 - User registration (sign up)
@@ -53,10 +55,10 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 - Food
 - Shop (one-to-many relationship with Food)
 
-### 7. Admin Panel
+### 4. Admin Panel
 - Utilizes Django Admin for backend management
 
-### 8. Information on Promotions and Discounts
+### 5. Information on Promotions and Discounts
 **Features:**
 - Promo codes
 - Category-specific discounts
@@ -65,7 +67,7 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 - Promotion
 - Discount
 
-### 9. Blog/Articles
+### 6. Blog/Articles
 **Features:**
 - Articles about Depok's culinary scene
 - Food tips and recommendations
@@ -73,7 +75,7 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 **Model:**
 - Article
 
-### 10. Feedback and Support
+### 7. Feedback and Support
 **Features:**
 - Feedback form
 - FAQ section
