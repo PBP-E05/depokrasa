@@ -22,31 +22,23 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 
 
 ## Modul yang Akan Diimplementasikan
-1. [Authentication](#1-authentication-auth)
-2. [User Dashboard](#2-user-dashboard)
-3. [Menu Management](#3-menu-management)
-4. [Admin Panel](#4-admin-panel)
-5. [Information on Promotions and Discounts](#5-information-on-promotions-and-discounts)
-6. [Blog/Articles](#6-blogarticles)
-7. [Feedback and Support](#7-feedback-and-support)
+1. [Authentication (auth) and User Management](#1-authentication-auth-and-user-management)
+2. [Menu Management](#3-menu-management)
+3. [Information on Promotions and Discounts](#5-information-on-promotions-and-discounts)
+4. [Blog/Articles](#6-blogarticles)
+5. [Feedback and Support](#7-feedback-and-support)
 
-### 1. Authentication (auth)
+### 1. Authentication (auth) and User Management
+**Features:**
+- Food wishlist
 - User registration (sign up)
 - Login and logout functionality
-- User profile management
-
-### 2. User Dashboard
-**Features:**
-- Order summary
-- Order history
-- Profile management (edit profile, change password)
-- Food wishlist
 
 **Views:**
 - Dashboard page
 - Order details page
 
-### 3. Menu Management
+### 2. Menu Management
 **Features:**
 - Food item listing (CRUD operations)
 - Food ratings and reviews
@@ -55,10 +47,7 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 - Food
 - Shop (one-to-many relationship with Food)
 
-### 4. Admin Panel
-- Utilizes Django Admin for backend management
-
-### 5. Information on Promotions and Discounts
+### 3. Information on Promotions and Discounts
 **Features:**
 - Promo codes
 - Category-specific discounts
@@ -67,7 +56,7 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 - Promotion
 - Discount
 
-### 6. Blog/Articles
+### 4. Blog/Articles
 **Features:**
 - Articles about Depok's culinary scene
 - Food tips and recommendations
@@ -75,7 +64,7 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 **Model:**
 - Article
 
-### 7. Feedback and Support
+### 5. Feedback and Support
 **Features:**
 - Feedback form
 - FAQ section
@@ -84,6 +73,9 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 - Feedback
 
 ## Sumber Dataset Awal
+1. [Link Google Spreadsheet](https://docs.google.com/spreadsheets/d/1kX3j5mdDwOSw6WzYEg5S7Ls4GGcUpeF5ypGo_OaXc88/edit?hl=id&gid=0#gid=0)
+2. [Gofood Daerah Depok](https://gofood.co.id/jakarta/depok-restaurants)
+3. [PergiKuliner.com Daerah Depok](https://pergikuliner.com/restoran/depok/)
 
 ## Peran Pengguna
 1. **Pengguna Umum**: Pengguna yang dapat menelusuri produk makanan, menambahkan makanan ke keranjang, menandai favorit, dan memberikan ulasan serta peringkat.
