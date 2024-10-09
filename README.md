@@ -8,7 +8,7 @@
 - Philip Halomoan Sampenta Manurung (2306240130)
 
 ## Deskripsi Aplikasi
-Dengan nama "DepokRasa", aplikasi kami bertujuan untuk memberikan informasi tentang berbagai jenis makanan yang ditemukan di Kota Depok. Tujuan aplikasi ini adalah untuk membantu penduduk lokal dan turis yang datang ke Depok menemukan toko makanan tertentu yang mereka cari. Aplikasi ini dibuat karena banyak sekali orang di depok dan ingin mencari tempat makan yang bukan itu itu saja dan membuat orang ingin tahu tentang produk apa yang ada di sana. Dengan menggunakan aplikasi ini, pengguna dapat dengan mudah menemukan toko atau restoran di Depok yang menjual barang yang mereka butuhkan, membuatnya lebih mudah untuk melihat makanan.
+Sebagai mahasiswa di Universitas Indonesia, kami semua memiliki satu masalah yang sama, yaitu menu makanan yang itu-itu saja. Di kota Depok yang besar ini kami kebingunngan dalam memilih makanan yang akan kami makan dan tempat untuk mendapatkannya. Sehingga, kami muncul dengan ide untuk menciptakan DepokRasa. DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berbagai jenis makanan atau minuman yang ditemukan di Kota Depok. Tujuan aplikasi ini adalah untuk membantu penduduk lokal dan turis yang datang ke Depok menemukan toko makanan atau minuman tertentu yang mereka cari. Dengan menggunakan aplikasi ini, pengguna dapat dengan mudah menemukan toko atau restoran di Depok yang menjual makanan atau minuman yang beragam, sehingga pengguna dapat menyicipi keberagaman rasa yang ada di Depok.
 
 ## Modul yang Akan Diimplementasikan
 1. [Authentication](#1-authentication-auth)
