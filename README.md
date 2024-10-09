@@ -106,4 +106,4 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
    - **Views**: Halaman pelacakan pengiriman, halaman status pengiriman.
 
 ## Tautan Deployment
-Aplikasi ini dapat diakses di: 
+Aplikasi ini dapat diakses di: [DepokRasa](http://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id/)
