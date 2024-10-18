@@ -11,7 +11,6 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-# Create your views here.
 def register(request):
     form = UserCreationForm()
 
@@ -20,7 +19,7 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been successfully created!')
-            return redirect('main:login')
+            return redirect('authentication:login')
     context = {'form':form}
     return render(request, 'register.html', context)
 
@@ -40,3 +39,9 @@ def login_user(request):
         form = AuthenticationForm(request)
    context = {'form': form}
    return render(request, 'login.html', context)
+
+def logout_user(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse('authentication:login'))
+    response.delete_cookie('last_login')
+    return response
