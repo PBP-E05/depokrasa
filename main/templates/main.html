@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% include 'navbar.html' %}
 
 <div>
     <h1>Home</h1>
@@ -8,4 +9,5 @@
     <a href='{% url "authentication:logout" %}'>Logout</a>
 </div>
 
+{% include 'footer.html' %}
 {% endblock %}
