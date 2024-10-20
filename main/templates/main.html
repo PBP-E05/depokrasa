@@ -2,11 +2,11 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div>
-    <h1>Home</h1>
-    <p>Welcome to the home page!</p>
-
-    <a href='{% url "authentication:logout" %}'>Logout</a>
+<div class="bg-primaryBackground w-full h-screen pt-32 px-20">
+    <div class="border-2 border-secondary-black">
+        <h1>Home</h1>
+        <p>Welcome to the home page!</p>
+    </div>
 </div>
 
 {% include 'footer.html' %}
