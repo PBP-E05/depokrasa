@@ -2,34 +2,36 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div>
-    <h1>Wishlist</h1>
-    <p>Here you can see your wishlist.</p>
-    <p>Click <a href="{% url 'usermanagement:add_wishlist' %}">here</a> to add a product to your wishlist.</p>
-    <p>Click <a href="{% url 'usermanagement:clear_wishlist' %}">here</a> to clear your wishlist.</p>
+<div class="bg-primaryBackground w-full h-screen pt-32 px-20">
+    <div>
+        <h1>Wishlist</h1>
+        <p>Here you can see your wishlist.</p>
+        <p>Click <a href="{% url 'usermanagement:add_wishlist' %}">here</a> to add a product to your wishlist.</p>
+        <p>Click <a href="{% url 'usermanagement:clear_wishlist' %}">here</a> to clear your wishlist.</p>
+    </div>
+    
+    {% if wishlists %}
+        <h1>Wishlist</h1>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Remove</th>
+            </tr>
+            {% for item in wishlists %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.price }}</td>
+                <td>
+                    <a href="{% url 'usermanagement:delete_wishlist' id=item.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Your wishlist is empty.</p>
+    {% endif %}
 </div>
-
-{% if wishlists %}
-    <h1>Wishlist</h1>
-    <table>
-        <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Remove</th>
-        </tr>
-        {% for item in wishlists %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.product.price }}</td>
-            <td>
-                <a href="{% url 'usermanagement:delete_wishlist' id=item.id %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>Your wishlist is empty.</p>
-{% endif %}
 
 {% include 'footer.html' %}
 {% endblock content %}
