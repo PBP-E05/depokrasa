@@ -1,21 +1,26 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+import json  # Jangan lupa impor modul json
 
 @login_required(login_url='authentication:login')
 def show_main(request):
-    # user = request.user
-    # user_profile = user.userprofile 
-    # print(f'User: {user}')
-    # for attr, value in user.__dict__.items():
-    #     print(f'{attr}: {value}')
+    # Ambil data restoran dari file JSON
+    restaurants = load_restaurants()
 
-    # print(f'UserProfile: {user_profile}')
-    # for attr, value in user_profile.__dict__.items():
-    #     print(f'{attr}: {value}')
-
+    # Buat context yang berisi data user dan data restoran
     context = {
         'user': request.user,
-        'last_login': request.COOKIES.get('last_login')
+        'last_login': request.COOKIES.get('last_login'),
+        'restaurants': restaurants,  # Tambahkan data restoran ke context
     }
 
+    # Render halaman main.html dengan data
     return render(request, 'main.html', context)
+
+def load_restaurants():
+    # Gunakan double backslash
+    json_path = 'C:\\Users\\skyne\\Documents\\New folder\\pbp\\depokrasa\\datasets\\datasets.json'
+
+    with open(json_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    return data['restaurants']

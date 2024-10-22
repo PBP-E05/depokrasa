@@ -9,6 +9,29 @@
         <p>{{ user.email }}</p>
         <p>{{ user.phone }}</p>
     </div>
+
+    <!-- Display Food Cards -->
+    <div class="grid grid-cols-3 gap-4 mt-8">
+        {% for restaurant in restaurants %}
+            {% for menu_item in restaurant.menu %}
+                <div class="relative break-inside-avoid bg-white rounded-lg shadow-md overflow-hidden border border-gray-300 hover:shadow-lg transition-shadow duration-300">
+                    <!-- Card Content -->
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <!-- Product Name and Price -->
+                            <h3 class="text-2xl font-semibold text-gray-900">{{ menu_item.food_name }}</h3>
+                            <p class="text-lg font-bold text-green-500">Rp{{ menu_item.price }}</p>
+                        </div>
+
+                        <p class="text-gray-600 text-sm mb-4">{{ restaurant.name }}</p>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="border-t border-gray-200"></div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
 {% include 'footer.html' %}
