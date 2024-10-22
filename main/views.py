@@ -19,7 +19,7 @@ def show_main(request):
 
 def load_restaurants():
     # Gunakan double backslash
-    json_path = 'C:\\Users\\skyne\\Documents\\New folder\\pbp\\depokrasa\\datasets\\datasets.json'
+    json_path = 'datasets\datasets.json'
 
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
