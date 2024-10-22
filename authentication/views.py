@@ -1,22 +1,26 @@
 import datetime
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from .forms import UserRegistrationForm
 
 def register(request):
-    form = UserCreationForm()
-
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your account has been successfully created!')
+            messages.success(request, 'Account created successfully')
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+            if user is not None:
+                login(request, user)
             return redirect('authentication:login')
-    context = {'form':form}
+    else:
+        form = UserRegistrationForm()
+    context = {'form': form}
     return render(request, 'register.html', context)
 
 def login_user(request):
