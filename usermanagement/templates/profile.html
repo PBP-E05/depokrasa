@@ -49,7 +49,10 @@
                                 <label for="last_name" class="text-primary-black">Last Name</label>
                                 <input type="text" name="last_name" id="last_name" class="border-2 bg-primaryBackground border-secondaryBackground rounded-lg p-2" value="{{ user.last_name }}">
 
-                                <button type="submit" class="bg-primaryBackground bg-primaryBackground text-primary-black rounded-lg p-2 mt-4" id="save-button" disabled>Save Changes</button>
+                                <div class="flex flex-row justify-between">
+                                    <div></div>
+                                    <button type="submit" class="bg-tertiaryBackground hover:bg-hoverPrimary text-primary-white rounded-lg px-6 py-2 mt-4 w-max disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-tertiaryBackground" id="save-button" disabled>Save Changes</button>
+                                </div>
                             </div>
                         </form>
                     </div>
