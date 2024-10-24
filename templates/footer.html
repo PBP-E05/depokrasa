@@ -1,3 +1,48 @@
-<footer>
-    <h5>&copy; 2024 DepokRasa Last Login: {{ last_login }}</h5>
+<footer class="bg-orange-50 border-t border-secondary-black mt-auto">
+    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-900">DepokRasa</h3>
+                <p class="text-sm text-gray-600">Your reliable food guide in Depok</p>
+                <p class="text-sm text-gray-500">Last Login: {{ last_login }}</p>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-900">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="/" class="text-sm text-gray-600 hover:text-green-500">Home</a></li>
+                    <li><a href="/restaurants" class="text-sm text-gray-600 hover:text-green-500">Restaurants</a></li>
+                    <li><a href="/orders" class="text-sm text-gray-600 hover:text-green-500">My Orders</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-900">Account</h3>
+                <ul class="space-y-2">
+                    <li><a href="/login" class="text-sm text-gray-600 hover:text-green-500">Login</a></li>
+                    <li><a href="/register" class="text-sm text-gray-600 hover:text-green-500">Register</a></li>
+                    <li><a href="/profile" class="text-sm text-gray-600 hover:text-green-500">My Profile</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-900">Contact Us</h3>
+                <ul class="space-y-2">
+                    <li class="text-sm text-gray-600">Email: support@depokrasa.com</li>
+                    <li class="text-sm text-gray-600">Phone: +62 895-3209-98558</li>
+                    <li class="text-sm text-gray-600">Address: Depok, West Java</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <p class="text-sm text-gray-600">&copy; 2024 DepokRasa. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="/" class="text-sm text-gray-600 hover:text-green-500">Privacy Policy</a>
+                    <a href="/" class="text-sm text-gray-600 hover:text-green-500">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </footer>
