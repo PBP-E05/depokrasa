@@ -8,6 +8,7 @@ urlpatterns = [
     path('auth/', include('authentication.urls', namespace='authentication')),
     path('user/', include('usermanagement.urls', namespace='usermanagement')),
     path('', include('main.urls')),
+    path('promotions/', include('promotions_discounts.urls', namespace='promotions_discounts')),
 ]
 
 if settings.DEBUG:
