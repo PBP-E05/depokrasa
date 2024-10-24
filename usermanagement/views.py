@@ -51,6 +51,7 @@ def edit_profile(request):
 
 @csrf_exempt
 @require_POST
+@login_required(login_url='authentication:login')
 def add_wishlist(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -62,11 +63,13 @@ def add_wishlist(request):
         wishlist.save()
         return redirect('usermanagement:wishlist')
     
+@login_required(login_url='authentication:login')
 def delete_wishlist(request, id):
     wishlist = Wishlist.objects.get(id=id)
     wishlist.delete()
     return redirect('usermanagement:wishlist')
 
+@login_required(login_url='authentication:login')
 def clear_wishlist(request):
     wishlists = Wishlist.objects.all()
     wishlists.delete()
