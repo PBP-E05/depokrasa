@@ -21,8 +21,8 @@
                 <a href="" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Discounts</h5>
                 </a>
-                {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->
-                <a href="" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+                
+                <a href="{% url 'articles:show_articles' %}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Blogs</h5>
                 </a>
                 {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->

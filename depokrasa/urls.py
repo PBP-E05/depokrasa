@@ -5,9 +5,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('main.urls')),
     path('auth/', include('authentication.urls', namespace='authentication')),
     path('user/', include('usermanagement.urls', namespace='usermanagement')),
-    path('', include('main.urls')),
+    path('articles/', include('articles.urls', namespace='articles')),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]
 
 if settings.DEBUG:
