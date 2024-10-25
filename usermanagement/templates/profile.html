@@ -3,7 +3,7 @@
 {% include 'navbar.html' %}
 
 <div>
-    <div class="bg-primaryBackground w-full min-h-screen pt-32 px-10 lg:px-20">
+    <div class="bg-primaryBackground w-full min-h-screen pt-32 px-5 sm:px-10 lg:px-20">
         <div class="w-full h-full border-2 border-primary-black px-6 py-4">
             <h1 class="text-primary-black text-2xl font-bold mb-5">Profile</h1>
             <div class="flex flex-col">
@@ -11,7 +11,7 @@
                     <div class="relative">
                         <form action="{% url 'usermanagement:profile' %}" method="POST" enctype="multipart/form-data" id="profile-form">
                             {% csrf_token %}
-                            <div class="flex flex-row items-center gap-5">
+                            <div class="flex flex-col lg:flex-row lg:items-center gap-5">
                                 <div class="w-24 h-24 rounded-full relative cursor-pointer justify-center items-center flex" style="background-color: {{ random_color }};">
                                     {% if user.userprofile.profile_picture %}
                                     {% if user.userprofile.profile_picture.url == '/media/profile_pictures/default.jpg' %}
@@ -36,18 +36,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-col gap-4 mt-4">
-                                <label for="username" class="text-primary-black hidden">Username</label>
-                                <input type="text" name="username" id="username" class="hidden border-2 border-primary-black rounded-lg p-2" value="{{ user.username }}" readonly>
+                            <div class="flex flex-col gap-2 mt-4">
+                                <div class="flex flex-col">
+                                    <label for="username" class="text-primary-black hidden font-semibold px-2">Username</label>
+                                    <input type="text" name="username" id="username" class="hidden border-2 border-primary-black rounded-lg p-2" value="{{ user.username }}" readonly>
+                                </div>
 
-                                <label for="email" class="text-primary-black">Email</label>
-                                <input type="email" name="email" id="email" class="border-2 bg-primaryBackground border-secondaryBackground rounded-lg p-2" value="{{ user.email }}">
-                                
-                                <label for="first_name" class="text-primary-black">First Name</label>
-                                <input type="text" name="first_name" id="first_name" class="border-2 bg-primaryBackground border-secondaryBackground rounded-lg p-2" value="{{ user.first_name }}">
-                                
-                                <label for="last_name" class="text-primary-black">Last Name</label>
-                                <input type="text" name="last_name" id="last_name" class="border-2 bg-primaryBackground border-secondaryBackground rounded-lg p-2" value="{{ user.last_name }}">
+                                <div class="flex flex-col">
+                                    <label for="email" class="text-primary-black font-semibold px-2">Email</label>
+                                    <input type="email" name="email" id="email" class="border-2 bg-primaryBackground border-secondaryBackground rounded-lg p-2" value="{{ user.email }}">
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label for="first_name" class="text-primary-black font-semibold px-2">First Name</label>
+                                    <input type="text" name="first_name" id="first_name" class="border-2 bg-primaryBackground border-secondaryBackground rounded-lg p-2" value="{{ user.first_name }}">
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <label for="last_name" class="text-primary-black font-semibold px-2">Last Name</label>
+                                    <input type="text" name="last_name" id="last_name" class="border-2 bg-primaryBackground border-secondaryBackground rounded-lg p-2" value="{{ user.last_name }}">
+                                </div>
 
                                 <div class="flex flex-row justify-between">
                                     <div></div>

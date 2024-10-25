@@ -8,4 +8,6 @@ urlpatterns = [
     path('import/', views.import_data_from_json, name='import_data'),  # URL for importing data from JSON
     path('delete_expired/', views.delete_expired_discounts, name='delete_expired_discounts'),  # URL for AJAX request to delete expired discounts
     path('main/', views.show_main, name='show_main'),  # Updated URL for main page
+    path('select_favorites/', views.select_favorite_shops, name='select_favorite_shops'),  # New URL for selecting favorite shops
+
 ]
