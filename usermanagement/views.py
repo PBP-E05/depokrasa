@@ -1,13 +1,12 @@
-import datetime
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.core import serializers
 from usermanagement.models import Wishlist
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib import messages
+from .forms import EditProfileForm, EditUserProfileForm
+from .utils import generate_random_color
+from authentication.models import UserProfile
 
 @login_required(login_url='authentication:login')
 def show_wishlist(request):
@@ -19,6 +18,37 @@ def show_wishlist(request):
     }
     return render(request, 'wishlist.html', context)
 
+@login_required(login_url='authentication:login')
+def edit_profile(request):
+    try:
+        user_profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        user_profile = UserProfile.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        profile_form = EditUserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid() and profile_form.is_valid():
+            profile_form.save()
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('usermanagement:profile')
+        else:
+            print(form.errors)
+            print(profile_form.errors)
+    else:
+        form = EditProfileForm(instance=request.user)
+        profile_form = EditUserProfileForm(instance=user_profile)
+    
+    # print('woiii', profile_form)
+    context = {
+        'form': form,
+        'profile_form': profile_form,
+        'random_color': generate_random_color(),
+        'random_color_2': generate_random_color(),
+    }
+    return render(request, 'profile.html', context)
+
 @csrf_exempt
 @require_POST
 def add_wishlist(request):
@@ -26,9 +56,9 @@ def add_wishlist(request):
         name = request.POST.get('name')
         description = request.POST.get('description')
         price = request.POST.get('price')
-        image = request.FILES.get('image')
+        # image = request.FILES.get('image')
         user = request.user
-        wishlist = Wishlist(name=name, description=description, price=price, image=image, user=user)
+        wishlist = Wishlist(name=name, description=description, price=price, user=user)
         wishlist.save()
         return redirect('usermanagement:wishlist')
     
