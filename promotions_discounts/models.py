@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Shop(models.Model):
     name = models.CharField(max_length=100)
@@ -18,15 +19,14 @@ class Food(models.Model):
 
 
 class Discount(models.Model):
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='discounts', default=1)  # Set default to an existing shop ID
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='discounts')  # Removed default to allow dynamic assignment
     discount_percentage = models.FloatField()  # E.g., 10, 15, 20 for 10%, 15%, 20%
-    start_date = models.DateField()
-    end_date = models.DateField()
+    end_date = models.DateTimeField()  # Changed to DateTimeField to allow more precise timing, like countdowns
 
     def is_active(self):
-        from datetime import date
-        today = date.today()
-        return self.start_date <= today <= self.end_date
+        from datetime import datetime
+        now = datetime.now()
+        return now <= self.end_date
 
     def __str__(self):
         return f"{self.discount_percentage}% discount at {self.shop.name}"
@@ -36,13 +36,22 @@ class Promotion(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='promotions')
     promotion_type = models.CharField(max_length=100)  # E.g., "Buy One Get One"
     description = models.TextField()
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateTimeField()  # Changed to DateTimeField for more precision
+    end_date = models.DateTimeField()
 
     def is_active(self):
-        from datetime import date
-        today = date.today()
-        return self.start_date <= today <= self.end_date
+        from datetime import datetime
+        now = datetime.now()
+        return self.start_date <= now <= self.end_date
 
     def __str__(self):
         return f"{self.promotion_type} at {self.shop.name}"
+
+
+class UserFavoriteShop(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorite_shops')
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='favorited_by')
+    weight = models.FloatField(default=1.0)  # Adding a weight field to give priority to favorite shops during discount assignment
+
+    def __str__(self):
+        return f"{self.user.username}'s favorite shop: {self.shop.name}"

@@ -15,8 +15,51 @@
                         <p>Original Price: {{ food.original_price }}</p>
                         <p>Discount: {{ food.discount_percentage }}%</p>
                         <p>Discounted Price: {{ food.discounted_price }}</p>
-                        <p>Valid until: {{ food.valid_until }}</p>
+                        <p>Valid until: <span id="timer-{{ forloop.counter }}"></span></p>
                     </li>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // Timer for each discount
+                            const endDate = new Date("{{ food.valid_until }}");  // Ensure this matches the correct format (e.g., ISO 8601)
+                            const timerElement = document.getElementById("timer-{{ forloop.counter }}");
+                    
+                            const interval = setInterval(function () {
+                                const now = new Date().getTime();
+                                const distance = endDate - now;
+                    
+                                if (distance < 0) {
+                                    clearInterval(interval);
+                                    timerElement.innerHTML = "Expired";
+                                } else {
+                                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                    timerElement.innerHTML = days + "d " + hours + "h " + minutes + "m ";
+                                }
+                            }, 1000);
+                        });
+                    
+                        // Cek expired diskon dengan AJAX setiap 60 detik
+                        setInterval(function () {
+                            $.ajax({
+                                url: '/promotions/delete_expired/',  // Endpoint untuk menghapus diskon expired
+                                method: 'POST',
+                                headers: { 'X-CSRFToken': '{{ csrf_token }}' },  // Sertakan CSRF token untuk keamanan
+                                success: function(response) {
+                                    if (response.deleted) {
+                                        alert(response.deleted_count + " expired discount(s) were deleted.");
+                                        location.reload(); // Refresh halaman untuk memperbarui data diskon
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error("Error saat menghapus diskon expired:", error);
+                                }
+                            });
+                        }, 60000); // Cek setiap 60 detik
+                    </script>
+                                   
+                               
                 {% endfor %}
             </ul>
         {% else %}
@@ -42,4 +85,23 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+    // Cek expired diskon dengan AJAX setiap 60 detik
+    setInterval(function () {
+        $.ajax({
+            url: '/promotions/delete_expired/',  // endpoint untuk menghapus diskon expired
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            success: function(response) {
+                if (response.deleted) {
+                    location.reload(); // Refresh halaman untuk memperbarui data diskon
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error saat menghapus diskon expired:", error);
+            }
+        });
+    }, 60000); // Cek setiap 60 detik
+</script>
 {% endblock %}

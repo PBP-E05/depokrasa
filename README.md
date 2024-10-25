@@ -82,17 +82,5 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
    - **Fitur Utama**: Registrasi, login/logout, melihat menu, membuat wishlist, mengelola keranjang belanja, melakukan checkout, dan melihat riwayat pesanan.
    - **Views**: Halaman dashboard pengguna, halaman profil, halaman riwayat pesanan, halaman wishlist.
 
-2. **Penjual**: Pengguna yang dapat menambahkan produk makanan ke platform, mengelola daftar produk, dan mengelola pesanan yang diterima.
-   - **Fitur Utama**: Menambah, mengedit, dan menghapus makanan; mengelola kategori makanan; memproses pesanan yang diterima.
-   - **Views**: Halaman manajemen menu, halaman pesanan penjual.
-
-3. **Admin**: Administrator yang dapat mengelola pengguna, memoderasi daftar produk, dan memastikan kelancaran operasi platform.
-   - **Fitur Utama**: Mengelola pengguna, melihat dan mengelola pesanan, memoderasi konten.
-   - **Views**: Admin Panel (menggunakan Django Admin).
-
-4. **Kurir**: Pengguna yang dapat melihat detail pengiriman dan mengelola status pengiriman pesanan.
-   - **Fitur Utama**: Melacak status pengiriman, mengelola opsi pengiriman.
-   - **Views**: Halaman pelacakan pengiriman, halaman status pengiriman.
-
 ## Tautan Deployment
 Aplikasi ini dapat diakses di: [DepokRasa](http://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id/)
