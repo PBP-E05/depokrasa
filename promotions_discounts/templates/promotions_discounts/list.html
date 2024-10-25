@@ -5,24 +5,24 @@
 <div class="container mx-auto mt-10 p-5">
     <h1 class="text-3xl font-bold mb-6 text-center">Discounted Foods</h1>
 
-    <!-- Favorite Shops Section -->
+    <!-- Favorite Shops Section with Discounted Foods -->
     <div class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">Your Favorite Shops with Discounts</h2>
+        <h2 class="text-2xl font-semibold mb-4">Discounted Foods at Your Favorite Shops</h2>
         {% if discounted_foods and discounted_foods|length > 0 %}
             <ul class="bg-white shadow-md rounded-lg p-5">
                 {% for food in discounted_foods %}
                     <li class="border-b border-gray-200 py-3">
                         <h3 class="text-xl font-bold">{{ food.food_name }}</h3>
                         <p>Shop: {{ food.shop_name }}</p>
-                        <p>Original Price: {{ food.original_price }}</p>
+                        <p>Original Price: Rp {{ food.original_price|floatformat:2 }}</p>
                         <p>Discount: {{ food.discount_percentage }}%</p>
-                        <p>Discounted Price: {{ food.discounted_price }}</p>
-                        <p>Valid until: <span id="timer-{{ forloop.counter }}"></span></p>
+                        <p>Discounted Price: Rp {{ food.discounted_price|floatformat:2 }}</p>
+                        <p>Valid until: <span id="timer-{{ forloop.counter }}">{{ food.valid_until }}</span></p>
                     </li>
 
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
-                            const endDate = new Date("{{ food.valid_until }}");
+                            const endDate = new Date("{{ food.valid_until|date:'c' }}");
                             const timerElement = document.getElementById("timer-{{ forloop.counter }}");
 
                             function updateTimer() {
@@ -58,9 +58,10 @@
             <ul class="bg-white shadow-md rounded-lg p-5">
                 {% for promotion in promotions %}
                     <li class="border-b border-gray-200 py-3">
-                        <h3 class="text-xl font-bold">{{ promotion.restaurant_name }}</h3>
-                        <p>Promotion: {{ promotion.promotion_name }}</p>
-                        <p>{{ promotion.promotion_description }}</p>
+                        <h3 class="text-xl font-bold">{{ promotion.shop.name }}</h3>
+                        <p>Promotion: {{ promotion.promotion_type }}</p>
+                        <p>{{ promotion.description }}</p>
+                        <p>Valid until: {{ promotion.end_date }}</p>
                     </li>
                 {% endfor %}
             </ul>
@@ -95,4 +96,6 @@
         });
     }, 60000);
 </script>
+
+{% include 'footer.html' %}
 {% endblock %}
