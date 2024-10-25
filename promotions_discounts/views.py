@@ -2,14 +2,13 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 import json
-from .models import Shop, Food, Discount, Promotion, UserFavoriteShop
-from datetime import date, timedelta, datetime
-from django.utils import timezone
+from .models import Shop, Food, Discount, UserFavoriteShop
+from datetime import datetime, timedelta
+import os
 import random
 
-# View untuk menampilkan halaman utama
+# Function to load restaurants data from JSON
 def load_restaurants():
-    # Membaca file JSON
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -17,18 +16,18 @@ def load_restaurants():
 
 @login_required(login_url='authentication:login')
 def show_main(request):
-    # Mengambil data restoran dari file JSON
+    # Load restaurants from JSON
     restaurants = load_restaurants()
 
-    # Mengambil daftar restoran favorit user
+    # Get user's favorite shops
     user_favorites = UserFavoriteShop.objects.filter(user=request.user)
     favorite_shops = [fav.shop.name for fav in user_favorites]
 
-    # Menentukan jumlah restoran yang akan mendapatkan diskon
-    number_of_discounts = min(5, len(restaurants))  # Misalnya, 5 restoran secara acak atau sesuai jumlah restoran yang ada
+    # Determine the number of discounts to apply
+    number_of_discounts = min(5, len(restaurants))
     discount_percentages = [10, 15, 20, 25, 30]
 
-    # Memilih restoran secara acak untuk diberikan diskon, dengan prioritas pada restoran favorit
+    # Select restaurants for discount (prioritizing favorites)
     favorite_restaurants = [restaurant for restaurant in restaurants if restaurant['name'] in favorite_shops]
     non_favorite_restaurants = [restaurant for restaurant in restaurants if restaurant['name'] not in favorite_shops]
 
@@ -37,36 +36,30 @@ def show_main(request):
         remaining_discounts = number_of_discounts - len(discounted_restaurants)
         discounted_restaurants += random.sample(non_favorite_restaurants, remaining_discounts)
 
-    # Menambahkan informasi diskon ke restoran yang dipilih
+    # Add discount info to selected restaurants
     for restaurant in discounted_restaurants:
         restaurant['discount_percentage'] = random.choice(discount_percentages)
         restaurant['discount_valid_until'] = (datetime.now() + timedelta(days=random.randint(2, 3))).strftime('%Y-%m-%d %H:%M:%S')
 
-    # Buat konteks untuk halaman template
     context = {
         'user': request.user,
         'last_login': request.COOKIES.get('last_login'),
         'restaurants': restaurants,
     }
 
-    # Render halaman dengan data
     return render(request, 'main.html', context)
 
-# View untuk mengimpor data dari JSON ke dalam database
+# Function to import data into the database from JSON
 def import_data_from_json(request):
-    # Membaca file JSON
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
-    # Loop melalui data dan masukkan ke dalam database
     for restaurant in data['restaurants']:
-        # Buat atau dapatkan objek Shop
         shop, created = Shop.objects.get_or_create(name=restaurant['name'], defaults={
             'location': restaurant.get('location', '')
         })
 
-        # Buat entri makanan untuk setiap restoran
         for menu_item in restaurant['menu']:
             Food.objects.get_or_create(
                 shop=shop,
@@ -76,28 +69,27 @@ def import_data_from_json(request):
 
     return HttpResponse("Data imported successfully!")
 
+# View to display promotions and discounts list
 @login_required(login_url='authentication:login')
 def promotions_and_discounts_list(request):
-    today = datetime.now()  # Use naive datetime
+    today = datetime.now()
 
-    # Hapus diskon yang sudah kedaluwarsa
+    # Remove expired discounts
     Discount.objects.filter(end_date__lt=today).delete()
 
-    # Load data dari JSON
+    # Load restaurant data
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-
     restaurants = data['restaurants']
 
-    # Get the user's favorite shops
+    # Get user's favorite shops
     user_favorites = UserFavoriteShop.objects.filter(user=request.user)
     favorite_shops = [fav.shop.name for fav in user_favorites]
 
-    # Create new discounts if needed
+    # Apply random discounts
     number_of_discounts = min(5, len(restaurants))
     discount_percentages = [10, 15, 20, 25, 30]
-
     favorite_restaurants = [restaurant for restaurant in restaurants if restaurant['name'] in favorite_shops]
     non_favorite_restaurants = [restaurant for restaurant in restaurants if restaurant['name'] not in favorite_shops]
 
@@ -112,7 +104,6 @@ def promotions_and_discounts_list(request):
         discount_percentage = random.choice(discount_percentages)
         end_date = datetime.now() + timedelta(days=random.randint(2, 3))
 
-        # Save new discount to the database
         shop, _ = Shop.objects.get_or_create(name=restaurant['name'])
         discount = Discount.objects.create(
             shop=shop,
@@ -131,12 +122,33 @@ def promotions_and_discounts_list(request):
                 'valid_until': discount.end_date.isoformat(),
             })
 
+    # Load promotions from JSON
+    promotions_json_path = os.path.join(os.path.dirname(__file__), 'dataPromotion', 'promotionJson.json')
+    with open(promotions_json_path, 'r', encoding='utf-8') as file:
+        promotion_data = json.load(file)
+    available_promotions = promotion_data['promotions']
+
+    # Assign random promotions to selected restaurants
+    number_of_promotions = min(5, len(restaurants))
+    promoted_restaurants = random.sample(restaurants, number_of_promotions)
+
+    promotions_list = []
+    for restaurant in promoted_restaurants:
+        promotion = random.choice(available_promotions)
+        promotions_list.append({
+            'restaurant_name': restaurant['name'],
+            'promotion_name': promotion['name'],
+            'promotion_description': promotion['description']
+        })
+
     context = {
         'discounted_foods': discounted_foods,
+        'promotions': promotions_list,
     }
 
     return render(request, 'promotions_discounts/list.html', context)
 
+# Function to delete expired discounts
 @login_required(login_url='authentication:login')
 def delete_expired_discounts(request):
     if request.method == 'POST':
@@ -146,4 +158,3 @@ def delete_expired_discounts(request):
         expired_discounts.delete()
         return JsonResponse({'deleted': deleted_count > 0, 'deleted_count': deleted_count})
     return JsonResponse({'deleted': False})
-

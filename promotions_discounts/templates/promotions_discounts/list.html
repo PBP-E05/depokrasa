@@ -20,14 +20,13 @@
 
                     <script>
                         document.addEventListener("DOMContentLoaded", function () {
-                            // Timer for each discount
-                            const endDate = new Date("{{ food.valid_until }}");  // Ensure this matches the correct format (e.g., ISO 8601)
+                            const endDate = new Date("{{ food.valid_until }}");
                             const timerElement = document.getElementById("timer-{{ forloop.counter }}");
-                    
+
                             const interval = setInterval(function () {
                                 const now = new Date().getTime();
                                 const distance = endDate - now;
-                    
+
                                 if (distance < 0) {
                                     clearInterval(interval);
                                     timerElement.innerHTML = "Expired";
@@ -39,27 +38,7 @@
                                 }
                             }, 1000);
                         });
-                    
-                        // Cek expired diskon dengan AJAX setiap 60 detik
-                        setInterval(function () {
-                            $.ajax({
-                                url: '/promotions/delete_expired/',  // Endpoint untuk menghapus diskon expired
-                                method: 'POST',
-                                headers: { 'X-CSRFToken': '{{ csrf_token }}' },  // Sertakan CSRF token untuk keamanan
-                                success: function(response) {
-                                    if (response.deleted) {
-                                        alert(response.deleted_count + " expired discount(s) were deleted.");
-                                        location.reload(); // Refresh halaman untuk memperbarui data diskon
-                                    }
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error("Error saat menghapus diskon expired:", error);
-                                }
-                            });
-                        }, 60000); // Cek setiap 60 detik
                     </script>
-                                   
-                               
                 {% endfor %}
             </ul>
         {% else %}
@@ -73,10 +52,9 @@
             <ul class="bg-white shadow-md rounded-lg p-5">
                 {% for promotion in promotions %}
                     <li class="border-b border-gray-200 py-3">
-                        <h3 class="text-xl font-bold">{{ promotion.shop.name }}</h3>
-                        <p>Promotion: {{ promotion.promotion_type }}</p>
-                        <p>{{ promotion.description }}</p>
-                        <p>Valid until: {{ promotion.end_date }}</p>
+                        <h3 class="text-xl font-bold">{{ promotion.restaurant_name }}</h3>
+                        <p>Promotion: {{ promotion.promotion_name }}</p>
+                        <p>{{ promotion.promotion_description }}</p>
                     </li>
                 {% endfor %}
             </ul>
@@ -87,21 +65,21 @@
 </div>
 
 <script>
-    // Cek expired diskon dengan AJAX setiap 60 detik
+    // AJAX to delete expired discounts every 60 seconds
     setInterval(function () {
         $.ajax({
-            url: '/promotions/delete_expired/',  // endpoint untuk menghapus diskon expired
+            url: '/promotions/delete_expired/',
             method: 'POST',
             headers: { 'X-CSRFToken': '{{ csrf_token }}' },
             success: function(response) {
                 if (response.deleted) {
-                    location.reload(); // Refresh halaman untuk memperbarui data diskon
+                    location.reload();
                 }
             },
             error: function(xhr, status, error) {
                 console.error("Error saat menghapus diskon expired:", error);
             }
         });
-    }, 60000); // Cek setiap 60 detik
+    }, 60000);
 </script>
 {% endblock %}
