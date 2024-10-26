@@ -7,6 +7,7 @@ from django.contrib import messages
 from .forms import EditProfileForm, EditUserProfileForm
 from .utils import generate_random_color
 from authentication.models import UserProfile
+import datetime
 
 @login_required(login_url='authentication:login')
 def show_wishlist(request):
@@ -14,7 +15,8 @@ def show_wishlist(request):
     wishlists = Wishlist.objects.all()
     context = {
         'wishlists': wishlists,
-        'last_login': request.COOKIES.get('last_login')
+        'last_login': request.COOKIES.get('last_login'),
+        'date_time': datetime.datetime.now().strftime('%d/%m'),
     }
     return render(request, 'wishlist.html', context)
 
@@ -51,6 +53,7 @@ def edit_profile(request):
 
 @csrf_exempt
 @require_POST
+@login_required(login_url='authentication:login')
 def add_wishlist(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -62,11 +65,13 @@ def add_wishlist(request):
         wishlist.save()
         return redirect('usermanagement:wishlist')
     
+@login_required(login_url='authentication:login')
 def delete_wishlist(request, id):
     wishlist = Wishlist.objects.get(id=id)
     wishlist.delete()
     return redirect('usermanagement:wishlist')
 
+@login_required(login_url='authentication:login')
 def clear_wishlist(request):
     wishlists = Wishlist.objects.all()
     wishlists.delete()

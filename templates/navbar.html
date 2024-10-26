@@ -1,45 +1,55 @@
 {% load static %}
 <div class="flex flex-col">
-    <nav class="font-playfair bg-primaryBackground fixed z-50 w-full flex h-28 px-10 lg:px-20 py-5 lg:shadow-lg lg:shadow-primaryBackground">
+    <nav class="font-playfair bg-primaryBackground fixed z-[70] w-full flex h-28 px-5 sm:px-10 lg:px-20 py-5 lg:shadow-lg lg:shadow-primaryBackground">
         <div class="flex flex-row justify-between items-center w-full border-t-2 border-b-2 border-secondary-black rounded-sm font-manrope">
-            <div>
+            <div class="flex-shrink-0">
                 <a href="{% url 'main:show_main' %}">
                     <img src="{% static 'images/depokrasa-logo.png' %}" alt="DepokRasa" class="h-10 xl:h-12 mt-1">
                 </a>
             </div>
 
-            <div class="hidden lg:flex flex-row text-lg xl:text-xl font-bold gap-5 xl:gap-8 items-center">
+            <div id="navItems" class="hidden lg:flex flex-row text-lg xl:text-xl font-bold gap-5 xl:gap-8 items-center transition-opacity duration-200">
                 {% url 'main:show_main' as show_main_url %}
                 <a href="" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Menus</h5>
                 </a>
-                {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->
+                {% url 'main:show_main' as show_main_url %}
                 <a href="" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Restaurants</h5>
                 </a>
-                {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->
+                {% url 'main:show_main' as show_main_url %}
                 <a href="" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Discounts</h5>
                 </a>
-                
+                {% url 'main:show_main' as show_main_url %}
                 <a href="{% url 'articles:show_articles' %}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
-                    <h5>Blogs</h5>
+                    <h5>Articles</h5>
                 </a>
-                {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->
+                {% url 'main:show_main' as show_main_url %}
                 <a href="" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Feedback &amp; Support</h5>
                 </a>
             </div>
 
-            <div class="flex flex-row gap-2 mr-4 justify-center items-center">
-                <div class="text-primary-black text-xl xl:text-2xl w-10 h-10 flex justify-center items-center rounded-full hover:bg-hoverBackground cursor-pointer">
-                    <i class="fa fa-solid fa-magnifying-glass"></i>
+            <div class="flex flex-row gap-2 justify-center items-center">
+                <div class="flex items-center flex-grow">
+                    <div id="searchContainer" class="flex items-center relative">
+                        <input type="text" id="searchInput" class="hidden w-0 h-10 px-4 border-2 border-primary-black rounded-full focus:outline-none transition-all duration-200 ease-in-out" placeholder="Search...">
+                        <button id="searchButton" class="text-primary-black text-xl xl:text-2xl w-10 h-10 flex justify-center items-center rounded-full hover:bg-hoverBackground cursor-pointer relative z-10">
+                            <i class="fa fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="lg:flex flex-col relative hidden">
+                {% if user.is_authenticated %}
+                <div class="lg:flex flex-col relative hidden flex-shrink-0">
                     <div id="userProfile" class="text-primary-black text-xl xl:text-2xl w-10 h-10 flex justify-center items-center rounded-full hover:bg-hoverBackground cursor-pointer">
                         <i class="fa fa-regular fa-user"></i>
                     </div>
                     <div id="profileModal" class="hidden absolute -left-52 top-10 w-54 xl:w-64 bg-primaryBackground border-2 border-primary-black shadow-lg rounded-md p-4 z-50">
+                        <a href='{% url "usermanagement:wishlist" %}' class="text-lg font-bold px-[5px] mb-2 flex flex-row items-center gap-1.5 w-full hover:bg-hoverBackground">
+                            <i class="fa fa-solid fa-basket-shopping"></i>
+                            <span class="text-xl">Wishlist</span>
+                        </a>
                         <a href='{% url "usermanagement:profile" %}' class="text-lg font-bold mb-1 px-1.5 flex flex-row items-center gap-2 w-full hover:bg-hoverBackground">
                             <i class="fa fa-solid fa-gear"></i>
                             <span class="text-xl pb-0.5">Settings</span>
@@ -50,7 +60,12 @@
                         </a>
                     </div>
                 </div>
-                <div class="lg:hidden flex text-primary-black text-2xl w-10 h-10 justify-center items-center rounded-full">
+                {% else %}
+                <a href="{% url 'authentication:login' %}" class="text-primary-black text-lg xl:text-xl hidden lg:flex justify-center items-center hover:bg-hoverBackground cursor-pointer font-manrope border-2 border-primary-black px-3 font-semibold flex-shrink-0">
+                    <span>Login</span>
+                </a>
+                {% endif %}
+                <div class="lg:hidden flex text-primary-black text-2xl w-10 h-10 justify-center items-center rounded-full flex-shrink-0">
                     <i id="menuToggle" class="fa fa-solid fa-bars"></i>
                 </div>
             </div>
@@ -58,7 +73,7 @@
     </nav>
 
     <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden fixed flex flex-col z-0 w-full text-xl font-bold gap-8 items-center bg-primaryBackground border-b-2 border-primary-black mt-28 navbar-slide-down">
+    <div id="mobile-menu" class="hidden fixed flex flex-col z-50 w-full text-xl font-bold gap-8 items-left px-10 lg:px-20 bg-primaryBackground border-b-2 border-primary-black mt-28">
         {% url 'main:show_main' as show_main_url %}
         <a href="" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
             <h5>Menus</h5>
@@ -80,6 +95,7 @@
             <h5>Feedback &amp; Support</h5>
         </a>
 
+        {% if user.is_authenticated %}
         <a href='{% url "usermanagement:profile" %}' class="text-lg font-bold flex flex-row items-center gap-2">
             <i class="fa fa-solid fa-gear"></i>
             <span class="text-xl pb-0.5">Settings</span>
@@ -89,41 +105,92 @@
             <i class="fa fa-solid fa-arrow-right-from-bracket"></i>
             <span class="font-semibold text-xl">Logout<span>
         </a>
+        {% else %}
+        <a href="{% url 'authentication:login' %}" class="text-primary-black w-max text-lg font-manrope border-2 border-primary-black px-3 mb-8 font-semibold">
+            <span>Login</span>
+        </a>
+        {% endif %}
     </div>
 </div>
 
-<script>
-    // Profile Modal
-    const userProfile = document.getElementById('userProfile');
-    const profileModal = document.getElementById('profileModal');
+    <script>
+        const userProfile = document.getElementById('userProfile');
+        const profileModal = document.getElementById('profileModal');
 
-    userProfile.addEventListener('click', () => {
-        profileModal.classList.toggle('hidden');
-    });
+        if (userProfile && profileModal) {
+            userProfile.addEventListener('click', () => {
+                profileModal.classList.toggle('hidden');
+            });
 
-    window.addEventListener('click', (e) => {
-        if (!profileModal.contains(e.target) && !userProfile.contains(e.target)) {
-            profileModal.classList.add('hidden');
+            window.addEventListener('click', (e) => {
+                if (!profileModal.contains(e.target) && !userProfile.contains(e.target)) {
+                    profileModal.classList.add('hidden');
+                }
+            });
         }
-    });
 
-    // Mobile Navbar
-    document.addEventListener('DOMContentLoaded', function () {
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileMenu = document.getElementById('mobile-menu');
+        const searchButton = document.getElementById('searchButton');
+        const searchInput = document.getElementById('searchInput');
+        const navItems = document.getElementById('navItems');
+        let isSearchExpanded = false;
 
-        menuToggle.addEventListener('click', function () {
-            if (mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.remove('hidden');
-                mobileMenu.classList.remove('animate-slideUp');
-                mobileMenu.classList.add('animate-slideDown');
-            } else {
-                mobileMenu.classList.remove('animate-slideDown');
-                mobileMenu.classList.add('animate-slideUp');
+        searchButton.addEventListener('click', () => {
+            if (!isSearchExpanded) {
+                searchInput.classList.remove('hidden');
+                if (window.innerWidth < 620) {
+                    searchInput.style.width = '20vw';
+                } else if (window.innerWidth < 1120) {
+                    searchInput.style.width = '50vw';
+                } else {
+                    searchInput.style.width = '65vw';
+                }
+                navItems.classList.remove('lg:flex');
+                navItems.classList.add('opacity-0');
+                isSearchExpanded = true;
                 setTimeout(() => {
-                    mobileMenu.classList.add('hidden');
-                }, 500);
+                    searchInput.focus();
+                }, 200);
+            } else {
+                searchInput.style.width = '0';
+                setTimeout(() => {
+                    searchInput.classList.add('hidden');
+                    navItems.classList.add('lg:flex');
+                    navItems.classList.remove('opacity-0');
+                }, 200);
+                isSearchExpanded = false;
             }
         });
-    });
-</script>
+
+        document.addEventListener('click', (e) => {
+            if (isSearchExpanded && !searchButton.contains(e.target) && !searchInput.contains(e.target)) {
+                searchInput.classList.remove('w-96');
+                searchInput.classList.add('w-0');
+                setTimeout(() => {
+                    searchInput.classList.add('hidden');
+                    navItems.classList.add('lg:flex');
+                    navItems.classList.remove('opacity-0');
+                }, 200);
+                isSearchExpanded = false;
+            }
+        });
+
+        // Mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', function () {
+                if (mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.remove('hidden');
+                    mobileMenu.classList.remove('animate-slideUp');
+                    mobileMenu.classList.add('animate-slideDown');
+                } else {
+                    mobileMenu.classList.remove('animate-slideDown');
+                    mobileMenu.classList.add('animate-slideUp');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                    }, 500);
+                }
+            });
+        }
+    </script>
+</div>
