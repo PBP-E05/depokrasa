@@ -23,3 +23,9 @@ class FeaturedNews(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Restaurant(models.Model):
+    name = models.CharField(max_length=255)
+   
+    def __str__(self):
+        return self.name

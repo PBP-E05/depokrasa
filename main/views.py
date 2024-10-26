@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 import json  # Jangan lupa impor modul json
 
-# @login_required(login_url='authentication:login')
+@login_required(login_url='authentication:login')
 def show_main(request):
     # Ambil data restoran dari file JSON
     restaurants = load_restaurants()

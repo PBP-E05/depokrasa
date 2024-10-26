@@ -11,28 +11,29 @@
     </div>
 
     <!-- Display Food Cards -->
-    <div class="grid grid-cols-3 gap-4 mt-8">
-        {% for restaurant in restaurants %}
-            {% for menu_item in restaurant.menu %}
-                <div class="relative break-inside-avoid bg-white rounded-lg shadow-md overflow-hidden border border-gray-300 hover:shadow-lg transition-shadow duration-300">
-                    <!-- Card Content -->
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <!-- Product Name and Price -->
-                            <h3 class="text-2xl font-semibold text-gray-900">{{ menu_item.food_name }}</h3>
-                            <p class="text-lg font-bold text-green-500">Rp{{ menu_item.price }}</p>
-                        </div>
-
-                        <p class="text-gray-600 text-sm mb-4">{{ restaurant.name }}</p>
-                    </div>
-
-                    <!-- Divider -->
-                    <div class="border-t border-gray-200"></div>
-                </div>
-            {% endfor %}
-        {% endfor %}
+    <div class="container mx-auto py-10">
+        <!-- Grid container untuk 1 kolom di mobile, 2 kolom di small screens, dan 3 kolom di medium screens -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {% for restaurant in restaurants %}
+          <div class="bg-white rounded-lg shadow-md overflow-hidden relative">
+            <div class="relative">
+              <!-- Menampilkan gambar menu dengan ukuran yang berbeda-beda -->
+              <img src="{{ restaurant.menu.0.image_url }}" alt="{{ restaurant.menu.0.food_name }}" class="w-full h-60 object-cover">
+            </div>
+            <div class="p-4 space-y-2">
+              <p class="text-lg font-semibold">{{ restaurant.menu.0.food_name }}</p>
+              <p class="text-gray-500">{{ restaurant.name }}</p>
+              <div class="mt-4 flex items-center justify-between">
+                <!-- Harga ditempatkan di sebelah kiri -->
+                <p class="text-green-700 font-bold text-xl">Rp{{ restaurant.menu.0.price }}</p>
+                <!-- Tombol lebih kecil -->
+                <button class="bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Add to wishlist</button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
     </div>
-</div>
 
 {% include 'footer.html' %}
 {% endblock %}
