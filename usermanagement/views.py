@@ -7,6 +7,7 @@ from django.contrib import messages
 from .forms import EditProfileForm, EditUserProfileForm
 from .utils import generate_random_color
 from authentication.models import UserProfile
+import datetime
 
 @login_required(login_url='authentication:login')
 def show_wishlist(request):
@@ -14,7 +15,8 @@ def show_wishlist(request):
     wishlists = Wishlist.objects.all()
     context = {
         'wishlists': wishlists,
-        'last_login': request.COOKIES.get('last_login')
+        'last_login': request.COOKIES.get('last_login'),
+        'date_time': datetime.datetime.now().strftime('%d/%m'),
     }
     return render(request, 'wishlist.html', context)
 
