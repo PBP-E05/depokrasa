@@ -26,7 +26,7 @@
                     <h5>Blogs</h5>
                 </a>
                 {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->
-                <a href="" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+                <a href='{% url "feedback:faq_page" %}?show_modal=true' class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Feedback &amp; Support</h5>
                 </a>
             </div>
@@ -82,7 +82,7 @@
             <h5>Blogs</h5>
         </a>
         {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->
-        <a href="" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+        <a href='{% url "feedback:faq_page" %}?show_modal=true' class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
             <h5>Feedback &amp; Support</h5>
         </a>
 

@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% block content %}
+{% include 'navbar.html' %}
+
+<section id="faq-section"class="bg-primaryBackground w-full min-h-screen pt-32 px-20 pb-20">
+    <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
+        <div class="max-w-2xl mx-auto text-center">
+            <h2 class="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">
+                Explore Common Questions
+            </h2>
+        </div>
+        <div class="max-w-3xl mx-auto mt-8 space-y-4 md:mt-16">
+            <div
+                class="transition-all duration-200 bg-white border border-gray-200 shadow-lg cursor-pointer hover:bg-gray-50">
+                <button type="button" id="question1" data-state="closed" class="flex items-center justify-between w-full px-4 py-5 sm:p-6">
+                    <span class="flex text-lg font-semibold text-black">How can I get started?</span>
+                    <svg id="arrow1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        class="w-6 h-6 text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="answer1" style="display:none" class="px-4 pb-5 sm:px-6 sm:pb-6">
+                    <p>Getting started is easy! Sign up for an account, and you'll have access to our platform's
+                        features.</p>
+                </div>
+            </div>
+            <div
+                class="transition-all duration-200 bg-white border border-gray-200 shadow-lg cursor-pointer hover:bg-gray-50">
+                <button type="button" id="question2" data-state="closed" class="flex items-center justify-between w-full px-4 py-5 sm:p-6">
+                    <span class="flex text-lg font-semibold text-black">What is the info that i can get?</span>
+                    <svg id="arrow2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        class="w-6 h-6 text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="answer2" style="display:none" class="px-4 pb-5 sm:px-6 sm:pb-6">
+                    <p>We provide an information on restaurants and its menus in Depok City. So make sure to never miss out.</p>
+                </div>
+            </div>
+            <div
+                class="transition-all duration-200 bg-white border border-gray-200 shadow-lg cursor-pointer hover:bg-gray-50">
+                <button type="button" id="question3" data-state="closed" class="flex items-center justify-between w-full px-4 py-5 sm:p-6">
+                    <span class="flex text-lg font-semibold text-black">What kind of support do you provide?</span>
+                    <svg id="arrow3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        class="w-6 h-6 text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="answer3" style="display:none" class="px-4 pb-5 sm:px-6 sm:pb-6">
+                    <p>We offer comprehensive customer support. You can reach out to our support team through
+                        various
+                        channels, including email, chat, and a knowledge base.</p>
+                </div>
+            </div>
+            <div
+                class="transition-all duration-200 bg-white border border-gray-200 shadow-lg cursor-pointer hover:bg-gray-50">
+                <button type="button" id="question4" data-state="closed" class="flex items-center justify-between w-full px-4 py-5 sm:p-6">
+                    <span class="flex text-lg font-semibold text-black">Can I book an appointment with a restaurant?</span>
+                    <svg id="arrow4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        class="w-6 h-6 text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="answer4" style="display:none" class="px-4 pb-5 sm:px-6 sm:pb-6">
+                    <p>Unfortunately, we haven't implement that feature yet, but we will soon.</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-gray-600 textbase mt-9">
+            Mind giving us feedback?
+            <span id="openFeedbackModal" class="cursor-pointer font-medium text-tertiary transition-all duration-200 hover:text-tertiary focus:text-tertiary hover-underline">FAQ
+            </span>
+        </p>
+    </div>
+</section>
+
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <form id="feedbackForm" method="post">
+            <h2 class="title-font mb-1 text-lg font-medium text-gray-900">FAQ</h2>
+            <p class="mb-5 leading-relaxed text-gray-600">If you had any issues or you liked our product, please share
+                with us!
+            </p>
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.subject.label_tag }}
+                {{ form.subject }}
+            </div>
+            <div class="form-group">
+                {{ form.message.label_tag }}
+                {{ form.message }}
+            </div>
+            <button class="rounded border-0 bg-indigo-500 py-2 px-6 text-lg text-white hover:bg-indigo-600 focus:outline-none">Submit</button>
+        </form>
+        <div id="formFeedback"></div>
+        <span id="closeModal" class="close-btn">&times;</span> <!-- Close button -->
+    </div>
+</div>
+
+
+<style>
+    #feedbackModal {
+        display: none; 
+        position: fixed; 
+        z-index: 1000; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 8px;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    #formFeedback p {
+        color: red;
+        font-size: 0.9rem;
+    }
+
+    /* Close Button Styles */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const anchor = window.location.hash;
+        if (anchor) {
+            document.querySelector(anchor).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
+    // JavaScript to toggle the answers and rotate the arrows
+    document.querySelectorAll('[id^="question"]').forEach(function(button, index) {
+        button.addEventListener('click', function() {
+            var answer = document.getElementById('answer' + (index + 1));
+            var arrow = document.getElementById('arrow' + (index + 1));
+
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                answer.style.display = 'none';
+                arrow.style.transform = 'rotate(-180deg)';
+            }
+        });
+    });
+    $(document).ready(function() {
+        // Open modal when "Feedback" button is clicked
+        $('#openFeedbackModal').on('click', function() {
+            $('#feedbackModal').fadeIn(); // Show the modal
+        });
+
+        // Close modal when clicking outside the modal content
+        $(window).on('click', function(event) {
+            if ($(event.target).is('#feedbackModal')) {
+                $('#feedbackModal').fadeOut(); // Hide modal
+            }
+        });
+
+        // Close modal when close button is clicked
+        $('#closeModal').on('click', function() {
+            $('#feedbackModal').fadeOut(); // Hide modal
+        });
+
+        // AJAX form submission for feedback
+        $('#feedbackForm').on('submit', function(event){
+            event.preventDefault();
+            $.ajax({
+                url: "{% url 'feedback:faq_page' %}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        $('#formFeedback').html('<p style="color: green;">Thank you for your feedback!</p>');
+                        $('#feedbackForm')[0].reset(); // Reset form fields after submission
+                    } else {
+                        let errors = '';
+                        for (let key in response.errors) {
+                            errors += `<p>${response.errors[key]}</p>`;
+                        }
+                        $('#formFeedback').html(errors); // Display form errors
+                    }
+                },
+                error: function() {
+                    $('#formFeedback').html('<p>An error occurred. Please try again.</p>');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

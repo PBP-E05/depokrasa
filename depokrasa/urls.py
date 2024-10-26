@@ -7,6 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authentication.urls', namespace='authentication')),
     path('user/', include('usermanagement.urls', namespace='usermanagement')),
+    path('feedback/', include('feedback.urls', namespace='feedback')),
     path('', include('main.urls')),
 ]
 
