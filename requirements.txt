@@ -6,3 +6,4 @@ requests
 urllib3
 bleach
 Pillow
+django-ckeditor-5

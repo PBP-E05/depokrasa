@@ -78,9 +78,13 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 3. [PergiKuliner.com Daerah Depok](https://pergikuliner.com/restoran/depok/)
 
 ## Peran Pengguna
-1. **Pengguna Umum**: Pengguna yang dapat menelusuri produk makanan, menambahkan makanan ke keranjang, menandai favorit, dan memberikan ulasan serta peringkat.
-   - **Fitur Utama**: Registrasi, login/logout, melihat menu, membuat wishlist, mengelola keranjang belanja, melakukan checkout, dan melihat riwayat pesanan.
-   - **Views**: Halaman dashboard pengguna, halaman profil, halaman riwayat pesanan, halaman wishlist.
+1. **Pengguna Umum**: Pengguna yang dapat menelusuri produk makanan, menandai favorit, dan memberikan ulasan serta peringkat.
+   - **Fitur Utama**: Registrasi, login/logout, melihat menu, dan membuat wishlist.
+   - **Views**: Halaman dashboard pengguna, halaman profil, halaman wishlist.
+
+2. **Admin**: Administrator yang dapat mengelola pengguna, memoderasi daftar produk, dan memastikan kelancaran operasi platform.
+   - **Fitur Utama**: Mengelola pengguna, melihat dan mengelola menu makanan, mengelola dan memoderasi artikel.
+   - **Views**: Admin Panel (menggunakan Django Admin).
 
 ## Tautan Deployment
 Aplikasi ini dapat diakses di: [DepokRasa](http://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id/)

@@ -6,11 +6,14 @@ from promotions_discounts import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('main.urls')),
     path('auth/', include('authentication.urls', namespace='authentication')),
     path('user/', include('usermanagement.urls', namespace='usermanagement')),
     path('', include('main.urls')),
     path('promotions/', include('promotions_discounts.urls', namespace='promotions_discounts')),
     path('select_favorites/', views.select_favorite_shops, name='select_favorite_shops'),
+    path('articles/', include('articles.urls', namespace='articles')),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,101 +1,92 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 {% include 'navbar.html' %}
-<div class="container mx-auto mt-10 p-5">
-    <h1 class="text-3xl font-bold mb-6 text-center">Discounted Foods</h1>
+<div class="min-h-screen bg-primaryBackground flex items-center justify-center p-4">
+    <div class="w-full max-w-6xl bg-white rounded-lg shadow-lg p-6">
+        <div class="text-center mb-8">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <h2 class="text-2xl font-bold text-gray-900">Makanan dengan Diskon di DepokRasa</h2>
+            <p class="text-gray-500 mt-2">Temukan makanan dengan harga spesial untuk Anda</p>
+        </div>
 
-    <!-- Favorite Shops Section with Discounted Foods -->
-    <div class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">Discounted Foods at Your Favorite Shops</h2>
-        {% if discounted_foods and discounted_foods|length > 0 %}
-            <ul class="bg-white shadow-md rounded-lg p-5">
-                {% for food in discounted_foods %}
-                    <li class="border-b border-gray-200 py-3">
-                        <h3 class="text-xl font-bold">{{ food.food_name }}</h3>
-                        <p>Shop: {{ food.shop_name }}</p>
-                        <p>Original Price: Rp {{ food.original_price|floatformat:2 }}</p>
-                        <p>Discount: {{ food.discount_percentage }}%</p>
-                        <p>Discounted Price: Rp {{ food.discounted_price|floatformat:2 }}</p>
-                        <p>Valid until: <span id="timer-{{ forloop.counter }}">{{ food.valid_until }}</span></p>
-                    </li>
+        <!-- Button to go to Select Favorite Shops (Filter page) -->
+        <div class="text-center mb-8">
+            <a href="{% url 'promotions_discounts:select_favorite_shops' %}" class="px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition duration-150 ease-in-out">
+                Filter Berdasarkan Restoran
+            </a>
+        </div>
 
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            const endDate = new Date("{{ food.valid_until|date:'c' }}");
-                            const timerElement = document.getElementById("timer-{{ forloop.counter }}");
+        <!-- Discounted Foods Section -->
+        <div class="mb-10">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Makanan dengan Diskon</h2>
+            {% if discounted_foods %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for food in discounted_foods %}
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-md">
+                            <h3 class="text-lg font-bold text-gray-800">{{ food.food_name }}</h3>
+                            <p class="text-sm text-gray-600">Restoran: {{ food.shop_name }}</p>
+                            <p class="text-sm text-gray-600">Harga Asli: Rp {{ food.original_price|floatformat:2 }}</p>
+                            <p class="text-sm text-gray-600">Diskon: {{ food.discount_percentage }}%</p>
+                            <p class="text-sm text-orange-500 font-semibold">Harga Setelah Diskon: Rp {{ food.discounted_price|floatformat:2 }}</p>
+                            <p class="text-xs text-gray-500">Berlaku hingga: <span id="timer-{{ forloop.counter }}">{{ food.valid_until }}</span></p>
+                        </div>
 
-                            function updateTimer() {
-                                const now = new Date().getTime();
-                                const distance = endDate - now;
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const endDate = new Date("{{ food.valid_until|date:'c' }}");
+                                const timerElement = document.getElementById("timer-{{ forloop.counter }}");
 
-                                if (distance < 0) {
-                                    clearInterval(interval);
-                                    timerElement.innerHTML = "Expired";
-                                } else {
-                                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                    timerElement.innerHTML = days + "d " + hours + "h " + minutes + "m ";
+                                function updateTimer() {
+                                    const now = new Date().getTime();
+                                    const distance = endDate - now;
+
+                                    if (distance < 0) {
+                                        clearInterval(interval);
+                                        timerElement.innerHTML = "Kadaluarsa";
+                                    } else {
+                                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                        timerElement.innerHTML = days + "h " + hours + "j " + minutes + "m ";
+                                    }
                                 }
-                            }
 
-                            const interval = setInterval(updateTimer, 1000);
-                            updateTimer(); // Initial call to set the time immediately
-                        });
-                    </script>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-gray-500">No active discounts available at the moment.</p>
-        {% endif %}
-    </div>
+                                const interval = setInterval(updateTimer, 1000);
+                                updateTimer();
+                            });
+                        </script>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500 text-center">Tidak ada diskon aktif saat ini.</p>
+            {% endif %}
+        </div>
 
-    <!-- Active Promotions Section -->
-    <div class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">Active Promotions</h2>
-        {% if promotions %}
-            <ul class="bg-white shadow-md rounded-lg p-5">
-                {% for promotion in promotions %}
-                    <li class="border-b border-gray-200 py-3">
-                        <h3 class="text-xl font-bold">{{ promotion.shop.name }}</h3>
-                        <p>Promotion: {{ promotion.promotion_type }}</p>
-                        <p>{{ promotion.description }}</p>
-                        <p>Valid until: {{ promotion.end_date }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-gray-500">No active promotions available at the moment.</p>
-        {% endif %}
-    </div>
-
-    <!-- Link to Favorite Shop Selection -->
-    <div class="text-center mt-6">
-        <a href="{% url 'promotions_discounts:select_favorite_shops' %}" class="px-4 py-2 bg-blue-500 text-white rounded">
-            Select and Prioritize Favorite Shops
-        </a>
+        <!-- Active Promotions Section -->
+        <div class="mb-10">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Promosi Aktif</h2>
+            {% if promotions %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for promotion in promotions %}
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-md">
+                            <h3 class="text-lg font-bold text-gray-800">{{ promotion.shop.name }}</h3>
+                            <p class="text-sm text-gray-600">Promosi: {{ promotion.promotion_type }}</p>
+                            <p class="text-sm text-gray-600">{{ promotion.description }}</p>
+                            <p class="text-xs text-gray-500">Berlaku hingga: {{ promotion.end_date }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500 text-center">Tidak ada promosi aktif saat ini.</p>
+            {% endif %}
+        </div>
     </div>
 </div>
-
-<script>
-    // AJAX to delete expired discounts every 60 seconds
-    setInterval(function () {
-        $.ajax({
-            url: '/promotions/delete_expired/',
-            method: 'POST',
-            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-            success: function(response) {
-                if (response.deleted) {
-                    location.reload();
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error saat menghapus diskon expired:", error);
-            }
-        });
-    }, 60000);
-</script>
-
 {% include 'footer.html' %}
 {% endblock %}
