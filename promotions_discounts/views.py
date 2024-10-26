@@ -10,7 +10,6 @@ from decimal import Decimal
 import os
 from django.http import HttpResponse, JsonResponse
 
-# Load restaurant data from JSON
 def load_restaurants():
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
@@ -27,14 +26,15 @@ def assign_discounts(restaurants):
         
         for menu_item in restaurant['menu']:
             food, _ = Food.objects.get_or_create(shop=shop, food_name=menu_item['food_name'], defaults={'price': menu_item['price']})
-
-            discount_percentage = random.choice(discount_percentages)
-            end_date = now + timedelta(days=random.randint(2, 3))
-            Discount.objects.update_or_create(
-                shop=shop,
-                discount_percentage=discount_percentage,
-                end_date=end_date
-            )
+            
+            active_discount = Discount.objects.filter(shop=shop, end_date__gt=now).first()
+            if active_discount:
+                discount_percentage = active_discount.discount_percentage
+                end_date = active_discount.end_date
+            else:
+                discount_percentage = random.choice(discount_percentages)
+                end_date = now + timedelta(days=random.randint(2, 3))
+                Discount.objects.create(shop=shop, discount_percentage=discount_percentage, end_date=end_date)
 
             discounted_price = food.price * (Decimal(1) - Decimal(discount_percentage) / Decimal(100))
             discounted_foods.append({
@@ -48,7 +48,6 @@ def assign_discounts(restaurants):
 
     return discounted_foods
 
-# Assign promotions for the promotion feature
 def assign_promotions(restaurants, number_of_promotions=5):
     promotions_json_path = os.path.join(os.path.dirname(__file__), 'dataPromotion', 'promotionJson.json')
     with open(promotions_json_path, 'r', encoding='utf-8') as file:
@@ -85,13 +84,12 @@ def promotions_and_discounts_list(request):
     restaurants = load_restaurants()
 
     if user_favorites:
-        # Tampilkan makanan dari restoran yang dipilih
         filtered_restaurants = [restaurant for restaurant in restaurants if restaurant['name'] in user_favorites]
         discounted_foods = assign_discounts(filtered_restaurants)
     else:
-        # Tampilkan makanan dari 5 restoran acak jika tidak ada filter
         selected_restaurants = random.sample(restaurants, 5) if len(restaurants) > 5 else restaurants
-        discounted_foods = random.sample(assign_discounts(selected_restaurants), min(15, len(assign_discounts(selected_restaurants))))
+        all_discounted_foods = assign_discounts(selected_restaurants)
+        discounted_foods = random.sample(all_discounted_foods, min(15, len(all_discounted_foods)))
 
     context = {
         'discounted_foods': discounted_foods,
@@ -134,4 +132,3 @@ def select_favorite_shops(request):
     form = FavoriteShopForm()
     context = {'form': form}
     return render(request, 'promotions_discounts/select_favorite_shops.html', context)
-

@@ -14,8 +14,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% csrf_token %}
                 {% for shop in form.fields.favorite_shops.queryset %}
-                    <label class="relative block cursor-pointer bg-gray-50 rounded-lg shadow-md overflow-hidden border border-gray-300 hover:shadow-lg transition-shadow duration-300 p-6">
-                        <input type="checkbox" name="selected_shops" value="{{ shop.name }}" id="shop-{{ forloop.counter }}" class="mr-2">
+                    <label class="relative flex items-center cursor-pointer bg-gray-50 rounded-lg shadow-md overflow-hidden border border-gray-300 hover:border-orange-500 hover:bg-orange-50 transition-all duration-300 p-6">
+                        <input type="checkbox" name="selected_shops" value="{{ shop.name }}" id="shop-{{ forloop.counter }}" class="w-5 h-5 mr-3 rounded border-gray-300 text-orange-500 focus:ring-orange-500">
+                        
+                        <!-- Nama Restoran -->
                         <h3 class="text-lg font-semibold text-gray-800">{{ shop.name }}</h3>
                     </label>
                 {% endfor %}

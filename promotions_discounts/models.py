@@ -36,7 +36,7 @@ class Promotion(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='promotions')
     promotion_type = models.CharField(max_length=100)  # E.g., "Buy One Get One"
     description = models.TextField()
-    start_date = models.DateTimeField()  # Changed to DateTimeField for more precision
+    start_date = models.DateTimeField() 
     end_date = models.DateTimeField()
 
     def is_active(self):
@@ -51,7 +51,7 @@ class Promotion(models.Model):
 class UserFavoriteShop(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorite_shops')
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name='favorited_by')
-    weight = models.FloatField(default=1.0)  # Adding a weight field to give priority to favorite shops during discount assignment
+    weight = models.FloatField(default=1.0) 
 
     def __str__(self):
         return f"{self.user.username}'s favorite shop: {self.shop.name}"

@@ -5,8 +5,8 @@ app_name = 'promotions_discounts'
 
 urlpatterns = [
     path('list/', views.promotions_and_discounts_list, name='promotions_and_discounts_list'),
-    path('import/', views.import_data_from_json, name='import_data'),  # URL for importing data from JSON
-    path('delete_expired/', views.delete_expired_discounts, name='delete_expired_discounts'),  # URL for AJAX request to delete expired discounts
-    path('select_favorites/', views.select_favorite_shops, name='select_favorite_shops'),  # New URL for selecting favorite shops
+    path('import/', views.import_data_from_json, name='import_data'),  
+    path('delete_expired/', views.delete_expired_discounts, name='delete_expired_discounts'),
+    path('select_favorites/', views.select_favorite_shops, name='select_favorite_shops'),  
 
 ]
