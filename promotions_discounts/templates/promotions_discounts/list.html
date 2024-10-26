@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="min-h-screen bg-primaryBackground flex items-center justify-center p-4">
+    <div class="w-full max-w-6xl bg-white rounded-lg shadow-lg p-6">
+        <br>
+        <br>
+        <br>
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Makanan dengan Diskon</h2>
+            <p class="text-gray-500 mt-2">Temukan makanan dengan harga spesial untuk Anda</p>
+        </div>
+
+        <!-- Button to go to Select Favorite Shops (Filter page) -->
+        <div class="text-center mb-8">
+            <a href="{% url 'promotions_discounts:select_favorite_shops' %}" class="px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition duration-150 ease-in-out">
+                Filter Berdasarkan Restoran
+            </a>
+        </div>
+
+        <!-- Discounted Foods Section -->
+        <div class="mb-10">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Kupon Diskon</h2>
+            {% if discounted_foods %}
+                <div class="coupon-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for food in discounted_foods %}
+                        <div class="coupon p-6 rounded-lg shadow-md text-center {% cycle 'color-red' 'color-orange' 'color-green' %}">
+                            <div class="discount-section bg-white p-4 text-center rounded-l-lg">
+                                <p class="text-4xl font-bold text-gray-800">{{ food.discount_percentage }}%</p>
+                                <p class="text-xs uppercase tracking-wider text-gray-500">Diskon</p>
+                            </div>
+                            <div class="details-section text-gray-800 p-4 text-center">
+                                <!-- Nama Makanan sebagai Judul -->
+                                <p class="text-lg font-bold uppercase">{{ food.food_name }}</p>
+                                <p class="text-sm mt-1">{{ food.shop_name }}</p>
+                                
+                                <!-- Harga Asli Dicoret dan Harga Diskon -->
+                                <p class="text-sm text-gray-500 line-through">Rp {{ food.original_price|floatformat:2 }}</p>
+                                <p class="text-lg font-semibold text-orange-500 mt-1">Rp {{ food.discounted_price|floatformat:2 }}</p>
+                                
+                                <!-- Berlaku Hingga dengan Font Lebih Besar -->
+                                <p class="text-sm mt-2 font-bold">Berlaku hingga: <span class="text-base text-gray-700" id="timer-{{ forloop.counter }}">{{ food.valid_until|date:"d M Y" }}</span></p>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const endDate = new Date("{{ food.valid_until|date:'c' }}");
+                                const timerElement = document.getElementById("timer-{{ forloop.counter }}");
+
+                                function updateTimer() {
+                                    const now = new Date().getTime();
+                                    const distance = endDate - now;
+
+                                    if (distance < 0) {
+                                        clearInterval(interval);
+                                        timerElement.innerHTML = "Kadaluarsa";
+                                    } else {
+                                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                        timerElement.innerHTML = days + "h " + hours + "j " + minutes + "m ";
+                                    }
+                                }
+
+                                const interval = setInterval(updateTimer, 1000);
+                                updateTimer();
+                            });
+                        </script>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500 text-center">Tidak ada diskon aktif saat ini.</p>
+            {% endif %}
+        </div>
+
+        <!-- Active Promotions Section -->
+        <div class="mb-10">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Promosi Aktif</h2>
+            {% if promotions %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for promotion in promotions %}
+                        <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center border border-gray-200">
+                            <h3 class="text-lg font-bold text-gray-800">{{ promotion.shop.name }}</h3>
+                            <p class="text-2xl font-semibold text-orange-500 mt-2">{{ promotion.promotion_type }}</p>
+                            <p class="text-sm text-gray-600 mt-2">{{ promotion.description }}</p>
+                            <p class="text-sm font-bold mt-4">Berlaku hingga: <span class="text-base text-gray-700">{{ promotion.end_date|date:"d M Y" }}</span></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500 text-center">Tidak ada promosi aktif saat ini.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<!-- AJAX script untuk menghapus kupon yang sudah kadaluwarsa setiap 60 detik -->
+<script>
+    setInterval(function () {
+        fetch("{% url 'promotions_discounts:delete_expired_discounts' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.deleted) {
+                location.reload();
+            }
+        })
+        .catch(error => console.error("Error saat menghapus kupon kadaluwarsa:", error));
+    }, 60000);
+</script>
+
+{% include 'footer.html' %}
+{% endblock %}

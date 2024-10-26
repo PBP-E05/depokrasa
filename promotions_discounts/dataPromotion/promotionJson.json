@@ -1,0 +1,24 @@
+{
+    "promotions": [
+        {
+            "name": "Beli 2 Gratis 1",
+            "description": "Dapatkan 1 item gratis setiap pembelian 2 item dari menu."
+        },
+        {
+            "name": "Gratis Minuman",
+            "description": "Dapatkan minuman gratis untuk setiap pembelian di atas Rp100.000."
+        },
+        {
+            "name": "Hadiah Kejutan",
+            "description": "Setiap pelanggan mendapatkan hadiah kejutan kecil setelah makan."
+        },
+        {
+            "name": "Voucher Cashback",
+            "description": "Dapatkan voucher cashback sebesar Rp20.000 untuk pembelian berikutnya."
+        },
+        {
+            "name": "Gratis Sampingan",
+            "description": "Dapatkan makanan sampingan gratis untuk setiap pesanan utama."
+        }
+    ]
+}
