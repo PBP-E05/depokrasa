@@ -46,6 +46,10 @@
                         <i class="fa fa-regular fa-user"></i>
                     </div>
                     <div id="profileModal" class="hidden absolute -left-52 top-10 w-54 xl:w-64 bg-primaryBackground border-2 border-primary-black shadow-lg rounded-md p-4 z-50">
+                        <a href='{% url "usermanagement:wishlist" %}' class="text-lg font-bold px-[5px] mb-2 flex flex-row items-center gap-1.5 w-full hover:bg-hoverBackground">
+                            <i class="fa fa-solid fa-basket-shopping"></i>
+                            <span class="text-xl">Wishlist</span>
+                        </a>
                         <a href='{% url "usermanagement:profile" %}' class="text-lg font-bold mb-1 px-1.5 flex flex-row items-center gap-2 w-full hover:bg-hoverBackground">
                             <i class="fa fa-solid fa-gear"></i>
                             <span class="text-xl pb-0.5">Settings</span>
