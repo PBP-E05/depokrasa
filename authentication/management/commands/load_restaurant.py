@@ -1,6 +1,6 @@
 import json
 from django.core.management.base import BaseCommand
-from main.models import Restaurant
+from main.models import Restaurant, Menu
 
 class Command(BaseCommand):
     help = 'Load restaurant data from datasets.json into the database'
@@ -12,8 +12,16 @@ class Command(BaseCommand):
             data = json.load(file)
 
         for restaurant_data in data['restaurants']:
-            Restaurant.objects.create(
+            restaurant = Restaurant.objects.create(
                 name=restaurant_data['name'],
             )
 
-        self.stdout.write(self.style.SUCCESS('Successfully loaded restaurant data'))
+            # Loop through the menu items and create Menu instances
+            for menu_item in restaurant_data['menu']:
+                Menu.objects.create(
+                    restaurant=restaurant,
+                    food_name=menu_item['food_name'],
+                    price=menu_item['price'],
+                )
+
+        self.stdout.write(self.style.SUCCESS('Successfully loaded restaurant and menu data'))
