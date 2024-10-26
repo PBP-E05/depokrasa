@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.core import serializers
 import json  # Jangan lupa impor modul json
 
-# @login_required(login_url='authentication:login')
+@login_required(login_url='authentication:login')
 def show_main(request):
     # Ambil data restoran dari file JSON
     restaurants = load_restaurants()
