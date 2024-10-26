@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'authentication',
     'usermanagement',
     'promotions_discounts',
-    'django_ckeditor_5'
-    'feedback'
+    'django_ckeditor_5',
+    'feedback',
 ]
 
 MIDDLEWARE = [

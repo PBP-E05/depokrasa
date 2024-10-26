@@ -10,7 +10,7 @@ def faq_page(request):
     if request.method == "POST":
         form = FeedbackForm(request.POST)
         if form.is_valid():
-            # Process the form (e.g., save feedback)
+
             return JsonResponse({"success": True})
         else:
             return JsonResponse({"success": False, "errors": form.errors})

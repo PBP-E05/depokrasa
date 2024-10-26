@@ -74,7 +74,6 @@
     </div>
 </section>
 
-<!-- Feedback Modal -->
 <div id="feedbackModal" class="modal">
     <div class="modal-content">
         <form id="feedbackForm" method="post">
@@ -94,7 +93,7 @@
             <button class="rounded border-0 bg-indigo-500 py-2 px-6 text-lg text-white hover:bg-indigo-600 focus:outline-none">Submit</button>
         </form>
         <div id="formFeedback"></div>
-        <span id="closeModal" class="close-btn">&times;</span> <!-- Close button -->
+        <span id="closeModal" class="close-btn">&times;</span>
     </div>
 </div>
 
@@ -159,7 +158,7 @@
         font-size: 0.9rem;
     }
 
-    /* Close Button Styles */
+
     .close-btn {
         position: absolute;
         top: 10px;
@@ -180,7 +179,7 @@
             });
         }
     });
-    // JavaScript to toggle the answers and rotate the arrows
+
     document.querySelectorAll('[id^="question"]').forEach(function(button, index) {
         button.addEventListener('click', function() {
             var answer = document.getElementById('answer' + (index + 1));
@@ -196,24 +195,20 @@
         });
     });
     $(document).ready(function() {
-        // Open modal when "Feedback" button is clicked
         $('#openFeedbackModal').on('click', function() {
-            $('#feedbackModal').fadeIn(); // Show the modal
+            $('#feedbackModal').fadeIn();
         });
 
-        // Close modal when clicking outside the modal content
         $(window).on('click', function(event) {
             if ($(event.target).is('#feedbackModal')) {
-                $('#feedbackModal').fadeOut(); // Hide modal
+                $('#feedbackModal').fadeOut(); 
             }
         });
 
-        // Close modal when close button is clicked
         $('#closeModal').on('click', function() {
-            $('#feedbackModal').fadeOut(); // Hide modal
+            $('#feedbackModal').fadeOut(); 
         });
 
-        // AJAX form submission for feedback
         $('#feedbackForm').on('submit', function(event){
             event.preventDefault();
             $.ajax({
@@ -223,13 +218,13 @@
                 success: function(response) {
                     if (response.success) {
                         $('#formFeedback').html('<p style="color: green;">Thank you for your feedback!</p>');
-                        $('#feedbackForm')[0].reset(); // Reset form fields after submission
+                        $('#feedbackForm')[0].reset(); 
                     } else {
                         let errors = '';
                         for (let key in response.errors) {
                             errors += `<p>${response.errors[key]}</p>`;
                         }
-                        $('#formFeedback').html(errors); // Display form errors
+                        $('#formFeedback').html(errors); 
                     }
                 },
                 error: function() {
@@ -239,4 +234,5 @@
         });
     });
 </script>
+{% include 'navbar.html' %}
 {% endblock %}
