@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'main',
     'authentication',
     'usermanagement',
+    'promotions_discounts',
     'articles',
     'django_ckeditor_5'
 ]
