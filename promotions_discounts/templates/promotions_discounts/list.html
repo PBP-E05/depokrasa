@@ -88,5 +88,23 @@
         </div>
     </div>
 </div>
+<!-- AJAX script untuk menghapus diskon yang sudah kadaluwarsa setiap 60 detik -->
+<script>
+    setInterval(function () {
+        fetch("{% url 'promotions_discounts:delete_expired_discounts' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.deleted) {
+                location.reload();
+            }
+        })
+        .catch(error => console.error("Error saat menghapus diskon kadaluwarsa:", error));
+    }, 60000);
+</script>
 {% include 'footer.html' %}
 {% endblock %}
