@@ -3,11 +3,9 @@
 {% include 'navbar.html' %}
 
 <div class="bg-primaryBackground w-full min-h-screen pt-32 px-20">
-    <div class="border-2 border-secondary-black">
-        <h1>Home</h1>
-        <p>Welcome to the home page!</p>
-        <p>{{ user.email }}</p>
-        <p>{{ user.phone }}</p>
+    <div class="border-2 border-secondary-black w-full h-[38rem]">
+        <div id="news-header" class="bg-blue-200">a</div>
+        <div id="news-content" class="bg-red-200">b</div>
     </div>
 
     <!-- Display Food Cards -->
@@ -33,6 +31,29 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+    async function getNews() {
+        return fetch("{% url 'main:show_news_json' %}")
+            .then(response => response.json())
+            .catch(error => console.error(error));
+    }
+
+    async function refreshNews() {
+        document.getElementById('news-content').innerHTML = '';
+        document.getElementById('news-content').className = '';
+
+        const news = await getNews();
+        let htmlString = '';
+        let classNameString = '';
+
+        if(news.length === 0) {
+            htmlString = `
+                
+            `
+        }
+    }
+</script>
 
 {% include 'footer.html' %}
 {% endblock %}
