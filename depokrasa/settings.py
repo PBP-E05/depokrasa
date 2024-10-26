@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'main',
     'authentication',
     'usermanagement',
-    'articles',
+    'promotions_discounts',
     'django_ckeditor_5'
 ]
 
@@ -162,7 +162,7 @@ customColorPalette = [
         },
     ]
 
-CKEDITOR_5_FILE_STORAGE = "articles.storage.CustomStorage"
+# CKEDITOR_5_FILE_STORAGE = "articles.storage.CustomStorage"
 
 CKEDITOR_5_CONFIGS = {
     'default': {

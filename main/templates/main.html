@@ -3,11 +3,9 @@
 {% include 'navbar.html' %}
 
 <div class="bg-primaryBackground w-full min-h-screen pt-32 px-20">
-    <div class="border-2 border-secondary-black">
-        <h1>Home</h1>
-        <p>Welcome to the home page!</p>
-        <p>{{ user.email }}</p>
-        <p>{{ user.phone }}</p>
+    <div class="border-2 border-secondary-black w-full h-[38rem]">
+        <div id="news-header" class="bg-blue-200">a</div>
+        <div id="news-content" class="bg-red-200">b</div>
     </div>
 
     <!-- Display Food Cards -->
@@ -15,25 +13,50 @@
         <!-- Grid container untuk 1 kolom di mobile, 2 kolom di small screens, dan 3 kolom di medium screens -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {% for restaurant in restaurants %}
-          <div class="bg-white rounded-lg shadow-md overflow-hidden relative">
-            <div class="relative">
-              <!-- Menampilkan gambar menu dengan ukuran yang berbeda-beda -->
-              <img src="{{ restaurant.menu.0.image_url }}" alt="{{ restaurant.menu.0.food_name }}" class="w-full h-60 object-cover">
-            </div>
-            <div class="p-4 space-y-2">
-              <p class="text-lg font-semibold">{{ restaurant.menu.0.food_name }}</p>
-              <p class="text-gray-500">{{ restaurant.name }}</p>
-              <div class="mt-4 flex items-center justify-between">
-                <!-- Harga ditempatkan di sebelah kiri -->
-                <p class="text-green-700 font-bold text-xl">Rp{{ restaurant.menu.0.price }}</p>
-                <!-- Tombol lebih kecil -->
-                <button class="bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Add to wishlist</button>
+            {% for menu_item in restaurant.menu %}
+              <div class="bg-white rounded-lg shadow-md overflow-hidden relative">
+                <div class="relative">
+                  <!-- Menampilkan gambar menu dengan ukuran yang berbeda-beda -->
+                  <img src="{{ menu_item.image_url }}" alt="{{ menu_item.food_name }}" class="w-full h-60 object-cover">
+                </div>
+                <div class="p-4 space-y-2">
+                  <p class="text-lg font-semibold">{{ menu_item.food_name }}</p>
+                  <p class="text-gray-500">{{ restaurant.name }}</p>
+                  <div class="mt-4 flex items-center justify-between">
+                    <!-- Harga ditempatkan di sebelah kiri -->
+                    <p class="text-green-700 font-bold text-xl">Rp{{ menu_item.price }}</p>
+                    <!-- Tombol lebih kecil -->
+                    <button class="bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Add to wishlist</button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            {% endfor %}
           {% endfor %}
         </div>
     </div>
+
+<script>
+    async function getNews() {
+        return fetch("{% url 'main:show_news_json' %}")
+            .then(response => response.json())
+            .catch(error => console.error(error));
+    }
+
+    async function refreshNews() {
+        document.getElementById('news-content').innerHTML = '';
+        document.getElementById('news-content').className = '';
+
+        const news = await getNews();
+        let htmlString = '';
+        let classNameString = '';
+
+        if(news.length === 0) {
+            htmlString = `
+                
+            `
+        }
+    }
+</script>
 
 {% include 'footer.html' %}
 {% endblock %}
