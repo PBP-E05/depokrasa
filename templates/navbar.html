@@ -10,7 +10,7 @@
 
             <div id="navItems" class="hidden lg:flex flex-row text-lg xl:text-xl font-bold gap-5 xl:gap-8 items-center transition-opacity duration-200">
                 {% url 'main:show_main' as show_main_url %}
-                <a href="{{show_main_url}}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+                <a href="{{show_main_url}}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == show_main_url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Menus</h5>
                 </a>
                 {% url 'main:show_main' as show_main_url %}
@@ -18,12 +18,12 @@
                     <h5>Restaurants</h5>
                 </a>
                 {% url 'promotions_discounts:promotions_and_discounts_list' as discounts_url %}
-                <a href="{{ discounts_url }}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+                <a href="{{ discounts_url }}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == discounts_url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Discounts</h5>
                 </a>
                 
                 {% url 'articles:show_articles' as show_articles %}
-                <a href="{{show_articles}}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+                <a href="{{show_articles}}" class="border-r-[3.1px] border-gray-300 pr-5 xl:pr-8 {% if request.path == show_articles %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
                     <h5>Articles</h5>
                 </a>
                 {% url 'main:show_main' as show_main_url %}
