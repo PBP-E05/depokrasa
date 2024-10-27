@@ -16,23 +16,14 @@ def show_articles(request):
 
 def show_article_category(request, category):
     articles = Article.objects.filter(categories__name__contains = category).order_by("-created_on")
-    
     context = {
         "category": category,
         "articles": articles,
     }
 
-    return render (request, "category.html", context)
+    return render(request, "category.html", context)
 
 def article_content(request, pk):
-    article = Article.objects.get(pk=pk)
-    context = {
-        "article": article,
-    }
-
-    return render(request, "content.html", context)
-
-def article_detail(request, pk):
     article = Article.objects.get(pk=pk)
     comments = Comment.objects.filter(article=article).order_by("-created_on")
     context = {
@@ -40,7 +31,7 @@ def article_detail(request, pk):
         "comments": comments,
     }
 
-    return render(request, "detail.html", context)
+    return render(request, "content.html", context)
 
 def show_articles_json(request):
     articles = Article.objects.all().order_by("-created_on")
@@ -65,6 +56,7 @@ def show_comments_json(request):
 @csrf_exempt
 @require_POST
 def add_comment_ajax(request):
+    ''' add comment with ajax '''
     comment_body = request.POST.get("comment")
     user =request.user
     article_id=request.POST.get("article_id")
@@ -79,5 +71,5 @@ def add_comment_ajax(request):
         new_comment.save()
         return JsonResponse(new_comment.to_dict(), status=201)
     else:
-        return JsonResponse(b"BAD REQUEST", status=400)
+        return JsonResponse({"error":"BAD REQUEST: empty comment"}, status=400)
 
