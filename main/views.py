@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.core import serializers
 import json  # Jangan lupa impor modul json
 
-@login_required(login_url='authentication:login')
 def show_main(request):
     # Ambil data restoran dari file JSON
     restaurants = load_restaurants()
@@ -34,6 +33,7 @@ def show_news_json(request):
 
 
 '''use this code to populate the database with dummy data, using shell
+py manage.py shell -i python
 
 from main.models import FeaturedNews
 
