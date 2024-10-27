@@ -10,14 +10,12 @@ from decimal import Decimal
 import os
 from django.http import HttpResponse, JsonResponse
 
-# @login_required(login_url='authentication:login')
 def load_restaurants():
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
     return data['restaurants']
 
-@login_required(login_url='authentication:login')
 def assign_discounts(restaurants):
     discount_percentages = [10, 15, 20, 25, 30]
     now = timezone.now()
@@ -50,7 +48,6 @@ def assign_discounts(restaurants):
 
     return discounted_foods
 
-@login_required(login_url='authentication:login')
 def assign_promotions(restaurants, number_of_promotions=5):
     promotions_json_path = os.path.join(os.path.dirname(__file__), 'dataPromotion', 'promotionJson.json')
     with open(promotions_json_path, 'r', encoding='utf-8') as file:
