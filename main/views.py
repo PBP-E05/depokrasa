@@ -4,6 +4,10 @@ from .models import FeaturedNews
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core import serializers
+from django.core.files.storage import default_storage
+from .models import Menu
+from django.shortcuts import get_object_or_404
+from usermanagement.models import Wishlist
 import json  # Jangan lupa impor modul json
 
 def show_main(request):
@@ -31,11 +35,6 @@ def load_restaurants():
 def show_news_json(request):
     news = FeaturedNews.objects.all()
     return HttpResponse(serializers.serialize('json', news), content_type='application/json')
-
-# views.py
-from django.http import JsonResponse
-from django.core.files.storage import default_storage
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def create_news_ajax(request):
@@ -126,6 +125,22 @@ def delete_news(request, id):
     news = FeaturedNews.objects.get(pk=id)
     news.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+def add_to_wishlist(request):
+    if request.method == 'POST':
+        user = request.user
+        product_id = request.POST.get('product_id')
+        product = get_object_or_404(Menu, id=product_id)
+
+        if Wishlist.objects.filter(user=user, product=product).exists():
+            return JsonResponse({'status': 'error', 'message': 'Item already in wishlist'}, status=400)
+
+        wishlist_item = Wishlist(user=user, product=product)
+        wishlist_item.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Item added to wishlist'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 '''use this code to populate the database with dummy data, using shell
 py manage.py shell -i python
