@@ -88,3 +88,5 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 
 ## Tautan Deployment
 Aplikasi ini dapat diakses di: [DepokRasa](http://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id/)
+
+Atau disini: [DepokRasa2](http://muhammad-wendy-depokrasa2.pbp.cs.ui.ac.id/)
