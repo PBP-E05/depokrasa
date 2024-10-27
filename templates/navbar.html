@@ -76,7 +76,7 @@
     <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden fixed flex flex-col z-50 w-full text-xl font-bold gap-8 items-left px-10 lg:px-20 bg-primaryBackground border-b-2 border-primary-black mt-28">
         {% url 'main:show_main' as show_main_url %}
-        <a href="" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+        <a href="{{show_main_url}}" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
             <h5>Menus</h5>
         </a>
         {% url 'main:show_main' as show_main_url %} <!-- Change this line to match the url -->
@@ -84,7 +84,7 @@
             <h5>Restaurants</h5>
         </a>
         {% url 'promotions_discounts' as discounts_url %} <!-- Change this line to match the url -->
-        <a href="" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
+        <a href="{{ discounts_url }}" class="{% if request.path == url %}text-tertiaryBackground{% else %}text-secondary-black hover:text-primary-black{% endif %}">
             <h5>Discounts</h5>
         </a>
         {% url 'articles:show_articles' as show_articles %} <!-- Change this line to match the url -->
