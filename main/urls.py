@@ -1,6 +1,7 @@
 from django.urls import path
-from main.views import show_main, show_news_json, create_news_ajax, delete_news
+from main.views import show_main, show_news_json, create_news_ajax, delete_news, add_to_wishlist
 from . import views
+
 app_name = 'main'
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('add-restaurant/', views.add_restaurant, name='add_restaurant'),
     path('show-template/', views.my_template_view, name='show_template'),
     path('insert_data/', views.insert_restaurant_data, name='insert_data'),
+    path('add-to-wishlist/', add_to_wishlist, name='add_to_wishlist'),
 ]
