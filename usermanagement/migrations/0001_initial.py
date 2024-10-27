@@ -24,7 +24,6 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.menu')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.menu')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
