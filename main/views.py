@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import FeaturedNews
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.core import serializers
 import json  # Jangan lupa impor modul json
 
@@ -31,6 +32,100 @@ def show_news_json(request):
     news = FeaturedNews.objects.all()
     return HttpResponse(serializers.serialize('json', news), content_type='application/json')
 
+# views.py
+from django.http import JsonResponse
+from django.core.files.storage import default_storage
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def create_news_ajax(request):
+    if request.method == 'POST':
+        try:
+            title = request.POST.get('title')
+            content = request.POST.get('content')
+            grand_title = request.POST.get('grand_title')
+            author = request.POST.get('author')
+            
+            try:
+                cooking_time = int(request.POST.get('cooking_time'))
+                if cooking_time < 1:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Cooking time must be at least 1 minute'
+                    }, status=400)
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Cooking time must be a valid number'
+                }, status=400)
+
+            try:
+                calories = int(request.POST.get('calories'))
+                if calories < 0:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Calories cannot be negative'
+                    }, status=400)
+            except (ValueError, TypeError):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Calories must be a valid number'
+                }, status=400)
+
+            icon_image = request.FILES.get('icon_image')
+            grand_image = request.FILES.get('grand_image')
+
+            if not all([title, content, grand_title, author, icon_image, grand_image]):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'All fields are required'
+                }, status=400)
+
+            icon_path = default_storage.save(f'featured_news/icons/{icon_image.name}', icon_image)
+            grand_path = default_storage.save(f'featured_news/images/{grand_image.name}', grand_image)
+
+            news = FeaturedNews.objects.create(
+                title=title,
+                content=content,
+                grand_title=grand_title,
+                author=author,
+                cooking_time=cooking_time,
+                calories=calories,
+                icon_image=icon_path,
+                grand_image=grand_path,
+                time_added=request.POST.get('time_added'),
+            )
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'News created successfully',
+                'news': {
+                    'id': news.id,
+                    'title': news.title,
+                    'content': news.content,
+                    'grand_title': news.grand_title,
+                    'author': news.author,
+                    'cooking_time': news.cooking_time,
+                    'calories': news.calories,
+                    'time_added': news.time_added,
+                }
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=500)
+
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method'
+    }, status=400)
+
+def delete_news(request, id):
+    news = FeaturedNews.objects.get(pk=id)
+    news.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
 
 '''use this code to populate the database with dummy data, using shell
 py manage.py shell -i python
@@ -47,7 +142,6 @@ news_data = [
         'grand_image': 'featured_news/default.jpg',
         'cooking_time': 30,
         'calories': 250,
-        'comments': 100,
         'time_added': '2024-01-01',
     },
     {
@@ -59,7 +153,6 @@ news_data = [
         'grand_image': 'featured_news/default.jpg',
         'cooking_time': 30,
         'calories': 250,
-        'comments': 100,
         'time_added': '2024-01-01',
     },
     {
@@ -71,7 +164,6 @@ news_data = [
         'grand_image': 'featured_news/default.jpg',
         'cooking_time': 30,
         'calories': 250,
-        'comments': 100,
         'time_added': '2024-01-01',
     },
 ]
@@ -86,7 +178,6 @@ for news_item in news_data:
         grand_image=news_item['grand_image'],
         cooking_time=news_item['cooking_time'],
         calories=news_item['calories'],
-        comments=news_item['comments'],
         time_added=news_item['time_added']
     )
 '''

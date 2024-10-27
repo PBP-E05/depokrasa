@@ -6,16 +6,15 @@ import random
 class FeaturedNews(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
-    icon_image = models.ImageField(upload_to='featured_news', blank=True, null=True)
+    icon_image = models.ImageField(upload_to='featured_news/icon', blank=True, null=True)
     grand_title = models.CharField(max_length=255)
     content = models.TextField()
     author = models.CharField(max_length=255)
-    grand_image = models.ImageField(upload_to='featured_news', blank=True, null=True)
+    grand_image = models.ImageField(upload_to='featured_news/grand', blank=True, null=True)
 
     cooking_time = models.IntegerField()
     calories = models.IntegerField()
 
-    comments = models.IntegerField(default=random.randint(50, 150))
     time_added = models.DateField(default=datetime.datetime.now().strftime('%d/%m'))
 
     created_at = models.DateTimeField(auto_now_add=True)
