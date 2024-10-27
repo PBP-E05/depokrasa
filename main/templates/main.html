@@ -4,8 +4,8 @@
 
 <div class="bg-primaryBackground w-full min-h-screen pt-32 px-20">
     <div class="border-2 border-secondary-black w-full h-[38rem]">
-        <div id="news-header" class="bg-blue-200">a</div>
-        <div id="news-content" class="bg-red-200">b</div>
+        <div id="news-header"></div>
+        <div id="news-content"></div>
     </div>
 
     <!-- Display Food Cards -->
@@ -46,16 +46,66 @@
         document.getElementById('news-content').innerHTML = '';
         document.getElementById('news-content').className = '';
 
+        document.getElementById('news-header').innerHTML = '';
+        document.getElementById('news-header').className = '';
+
         const news = await getNews();
+        // News header
+        let htmlStringHeader = '';
+        let classNameStringHeader = '';
+
+        if(news.length === 0) {
+          htmlStringHeader = `
+            <div class="text-center text-lg font-semibold p-4">
+              No news available
+            </div>
+          `
+        } else {
+          classNameStringHeader = 'flex flex-row justify-between divide-x-2 divide-secondary-black';
+          news.forEach((newsItem, index) => {
+            htmlStringHeader += `
+                <div class="text-center text-lg font-playfair  font-black w-full py-2">
+                    ${String(index + 1).padStart(2, '0')}
+                </div>
+            `
+          });
+        }
+
+        // Mews content
         let htmlString = '';
         let classNameString = '';
 
         if(news.length === 0) {
             htmlString = `
-                
+                <div class="text-center text-lg font-semibold p-4">
+                    No news available
+                </div>
             `
+        } else {
+            classNameString = 'p-4';
+            news.forEach((newsItem) => {
+                htmlString += `
+                    <div class="text-lg font-semibold">
+                        ${newsItem.title}
+                    </div>
+                    <div class="text-sm">
+                        ${newsItem.content}
+                    </div>
+                    <div class="text-sm">
+                        ${newsItem.date}
+                    </div>
+                    <br>
+                `
+            });
         }
+
+        document.getElementById('news-header').innerHTML = htmlStringHeader;
+        document.getElementById('news-header').className = classNameStringHeader;
+
+        document.getElementById('news-content').innerHTML = htmlString;
+        document.getElementById('news-content').className = classNameString;
     }
+    refreshNews();
 </script>
 
 {% include 'footer.html' %}
