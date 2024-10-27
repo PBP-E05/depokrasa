@@ -8,6 +8,11 @@ db.sqlite3
 # Backup files
 *.bak
 
+# Ignore all image files (PNG, JPG, etc.) in any subdirectory of media
+media/article_featured_image/**/*.{png,jpg,jpeg,gif}
+media/articles/**/*.{png,jpg,jpeg,gif}
+
+
 # If you are using PyCharm
 # User-specific stuff
 .idea/**/workspace.xml
