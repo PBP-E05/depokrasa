@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="bg-primaryBackground w-full h-screen pt-32 px-20 pb-5">
+    
+    <div class="font-bold font-manrope text-2xl">
+        {% block page_title %}
+        <h2>ARTICLES</h2>
+        {% endblock page_title %}
+        <hr class="border border-black">
+    </div>
+    
+    {% block articles %}
+    <div id="article_cards"></div>
+    {% endblock articles %}
+    
+</div>    
+{% include 'footer.html' %}
+{% block script %}
+<script>
+    async function getArticles(){
+        return fetch("{% url 'articles:show_articles_json' %}").then((res) => res.json());
+    }
+    async function refreshArticles(){
+        document.getElementById("article_cards").innerHTML="";
+        const articles = await getArticles();
+        let htmlString="";
+
+        articles.forEach(article => {
+            console.log(article.id);
+            const regex = /\<p\>(\s*\w+\s+){2,}.*?\<\/p\>/;
+            const content = article.body;
+            const preview_text = content.match(regex);
+            htmlString += `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden mb-2 p-2">
+                    <div class="flex flex-row space-x-1">
+                        <img src="${article.featured_img}" alt="featured image" class="object-contain border border-gray-400 rounded-lg w-20 h-20 object-cover">
+                        <div class="flex flex-col">
+                            <div class="font-semibold">
+                                <a href="/articles/${article.id}" >${ article.title }</a>
+                            </div>
+                            <div class="flex flex-row items-baseline text-sm text-gray-500">
+                                <p>${ new Date(article.created_on).toLocaleDateString().replace(/\//g, '-') } | Categories:&nbsp</p> 
+                                ${getCategories(article)}
+                            </div>
+                            <div id="body_preview" class="font-semilight">
+                                ${preview_text?preview_text[0]:""}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `
+        });
+
+        document.getElementById("article_cards").innerHTML = htmlString;
+    }
+
+    function getCategories(article){
+        var categoriesString ="";
+        article.categories.forEach((category) => {
+            categoriesString += `
+                <div class="bg-green-700 text-white font-semibold rounded-lg px-2 mr-1 text-sm">
+                    <a href="/articles/category/${category}/">${category}</a>
+                </div>
+            `;
+        });
+        return categoriesString;
+    }
+
+    refreshArticles();
+</script>
+{% endblock script %}
+{% endblock content %}

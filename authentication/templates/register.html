@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-primaryBackground flex items-center justify-center p-4">
+    <div class="w-full max-w-xl bg-primary-white rounded-lg shadow-lg p-6">
+        <div class="text-center mb-8">
+            <div class="flex justify-center mb-4">
+                <img src="{% static 'images/depokrasa-logo.png' %}" alt="DepokRasa" class="h-10">
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900">Create your DepokRasa account</h2>
+            <p class="text-gray-500 mt-2">Join our community of food lovers</p>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6">
+                <ul class="list-disc list-inside">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="space-y-2">
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Username
+                </label>
+                <div class="relative">
+                    <input type="text" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
+                        class="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        placeholder="Choose a username"
+                        {% if form.username.value %}value="{{ form.username.value }}"{% endif %}
+                        required>
+                </div>
+                {% if form.username.errors %}
+                <p class="text-red-600 text-sm">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="space-y-2">
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Email
+                </label>
+                <div class="relative">
+                    <input type="email" name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}"
+                        class="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        placeholder="Enter your email"
+                        {% if form.email.value %}value="{{ form.email.value }}"{% endif %}
+                        required>
+                </div>
+                {% if form.email.errors %}
+                <p class="text-red-600 text-sm">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex flex-row justify-between gap-4">
+              <div class="space-y-2 w-full">
+                <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Password
+                  </label>
+                <div class="relative">
+                    <input type="password" name="{{ form.password1.html_name }}" id="{{ form.password1.id_for_label }}"
+                    class="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        placeholder="Create a password"
+                        required>
+                      </div>
+                      {% if form.password1.errors %}
+                <p class="text-red-600 text-sm">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="space-y-2 w-full">
+                <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                  Confirm Password
+                </label>
+                <div class="relative">
+                  <input type="password" name="{{ form.password2.html_name }}" id="{{ form.password2.id_for_label }}"
+                  class="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        placeholder="Confirm your password"
+                        required>
+                </div>
+                {% if form.password2.errors %}
+                <p class="text-red-600 text-sm">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 font-manrope">{{ form.password1.help_text|safe }}</p>
+            
+          <!-- Submit Button -->
+          <button type="submit" 
+            class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition duration-150 ease-in-out">
+            Create Account
+          </button>
+
+            <!-- Sign In Link -->
+            <div class="text-center text-sm text-gray-500">
+                Already have an account?
+                <a href="{% url 'authentication:login' %}" class="text-orange-500 hover:text-orange-600 font-medium">
+                    Sign in
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

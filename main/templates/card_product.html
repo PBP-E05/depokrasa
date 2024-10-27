@@ -1,0 +1,31 @@
+<div class="flex min-h-screen items-center justify-center bg-amber-100 text-white">
+  <div class="flex max-w-2xl rounded-xl border-black bg-white ">
+    <div class="w-1/2">
+    </div>
+
+    <div class="w-1/2 space-y-4 rounded-xl bg-white text-black">
+      {% for restaurant in restaurants %}
+      <div class="space-y-4 ml-7 mt-14">
+
+        <p>{{ restaurant.name }}</p>
+
+        {% if restaurant.menu and restaurant.menu|length > 0 %}
+        <h1 class="text-4xl font-bold">{{ restaurant.menu.0.food_name }}</h1>
+
+        <div class="flex items-center">
+          <p class="text-green-700 text-4xl font-bold">Rp{{ restaurant.menu.0.price }}</p>
+        </div>
+        {% else %}
+        <p class="text-red-500">Menu not available</p>
+        {% endif %}
+
+      </div>
+
+      <!-- Tombol Add to Wishlist -->
+      <div class="items-center text-center justify-center">
+        <button class="text-white font-bold bg-green-800 py-4 px-20 rounded-xl">Add to wishlist</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+{% extends "index.html" %}
+
+{% block page_title %}
+<h2>CATEGORY: {{ category }}</h2>
+{% endblock page_title %}
+
+{% block script %}
+<script>
+    const getArticlesByCategoryURL = "{% url 'articles:show_articles_by_category_json' category %}";
+
+    async function getArticlesByCategory(){
+        return fetch(`${getArticlesByCategoryURL}`).then((res) => res.json());
+    }   
+    
+    async function refreshArticles(){
+        document.getElementById("article_cards").innerHTML="";
+        const articles = await getArticlesByCategory();
+        let htmlString="";
+
+        articles.forEach(article => {
+            console.log(article);
+            const regex = /\<p\>.*?\<\/p\>/;
+            const content = article.body;
+            const preview_text = content.match(regex);
+            htmlString += `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden mb-2 p-2">
+                    <div class="flex flex-row">
+                        <img src="${article.featured_img}" alt="featured image" class="border border-black w-20 h-20 object-cover">
+                        <div class="flex flex-col">
+                            <div class="font-semibold">
+                                <a href="/articles/${article.id}" >${ article.title }</a>
+                            </div>
+                            <div class="flex flex-row items-baseline">
+                                <p>${ new Date(article.created_on).toLocaleDateString().replace(/\//g, '-') } | Categories:&nbsp</p> 
+                                ${getCategories(article)}
+                            </div>
+                            <div id="body_preview" class="font-semilight">
+                                ${preview_text?preview_text[0]:""}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `
+        });
+
+        document.getElementById("article_cards").innerHTML = htmlString;
+    }
+
+    function getCategories(article){
+        var categoriesString ="";
+        article.categories.forEach((category) => {
+            categoriesString += `
+                <div class="bg-green-700 text-white font-semibold rounded-lg px-2 mr-1 text-sm">
+                    <a href="/articles/category/${category}">${category}</a>
+                </div>
+            `;
+        });
+        return categoriesString;
+    }
+
+    refreshArticles();
+</script>
+{% endblock script %} 
