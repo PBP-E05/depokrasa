@@ -78,7 +78,7 @@ def assign_promotions(restaurants, number_of_promotions=5):
     active_promotions = Promotion.objects.filter(end_date__gt=now)
     return active_promotions
 
-@login_required
+@login_required(login_url='authentication:login')
 def promotions_and_discounts_list(request):
     user_favorites = request.GET.getlist('selected_shops')
     restaurants = load_restaurants()
@@ -98,7 +98,7 @@ def promotions_and_discounts_list(request):
 
     return render(request, 'promotions_discounts/list.html', context)
 
-@login_required
+@login_required(login_url='authentication:login')
 def delete_expired_discounts(request):
     if request.method == 'POST':
         today = timezone.now()
@@ -127,7 +127,7 @@ def import_data_from_json(request):
 
     return HttpResponse("Data imported successfully!")
 
-@login_required
+@login_required(login_url='authentication:login')
 def select_favorite_shops(request):
     form = FavoriteShopForm()
     context = {'form': form}
