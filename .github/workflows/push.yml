@@ -32,6 +32,9 @@ jobs:
           echo "Creating temporary branch"
           git checkout -b tmp
 
+          # Pull from pws master to ensure the latest changes are in tmp
+          git pull $PWS_URL master || echo "No changes to pull from pws master"
+
           # Push to master branch and capture the output
           push_output=$(git push $PWS_URL tmp:master 2>&1)
           if [[ $? -ne 0 ]]; then
