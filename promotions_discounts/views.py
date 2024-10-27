@@ -10,12 +10,14 @@ from decimal import Decimal
 import os
 from django.http import HttpResponse, JsonResponse
 
+@login_required(login_url='authentication:login')
 def load_restaurants():
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
     return data['restaurants']
 
+@login_required(login_url='authentication:login')
 def assign_discounts(restaurants):
     discount_percentages = [10, 15, 20, 25, 30]
     now = timezone.now()
@@ -48,6 +50,7 @@ def assign_discounts(restaurants):
 
     return discounted_foods
 
+@login_required(login_url='authentication:login')
 def assign_promotions(restaurants, number_of_promotions=5):
     promotions_json_path = os.path.join(os.path.dirname(__file__), 'dataPromotion', 'promotionJson.json')
     with open(promotions_json_path, 'r', encoding='utf-8') as file:
@@ -78,7 +81,7 @@ def assign_promotions(restaurants, number_of_promotions=5):
     active_promotions = Promotion.objects.filter(end_date__gt=now)
     return active_promotions
 
-@login_required
+@login_required(login_url='authentication:login')
 def promotions_and_discounts_list(request):
     user_favorites = request.GET.getlist('selected_shops')
     restaurants = load_restaurants()
@@ -98,7 +101,7 @@ def promotions_and_discounts_list(request):
 
     return render(request, 'promotions_discounts/list.html', context)
 
-@login_required
+@login_required(login_url='authentication:login')
 def delete_expired_discounts(request):
     if request.method == 'POST':
         today = timezone.now()
@@ -127,7 +130,7 @@ def import_data_from_json(request):
 
     return HttpResponse("Data imported successfully!")
 
-@login_required
+@login_required(login_url='authentication:login')
 def select_favorite_shops(request):
     form = FavoriteShopForm()
     context = {'form': form}
