@@ -56,6 +56,7 @@ def show_comments_json(request):
 @csrf_exempt
 @require_POST
 def add_comment_ajax(request):
+    '''add comment with ajax'''
     comment_body = request.POST.get("comment")
     user =request.user
     article_id=request.POST.get("article_id")
