@@ -2,11 +2,11 @@ name: Push to PWS
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths-ignore:
         - '**.md'
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
     paths-ignore:
         - '**.md'
 
@@ -36,9 +36,11 @@ jobs:
           fi
           
           # Switch to master branch
+          echo "checkout to master"
           git checkout master
 
           # Push to master branch and capture the output
+          echo "pushed to master branch"
           push_output=$(git push $PWS_URL main:master 2>&1)
           if [[ $? -ne 0 ]]; then
             echo "Push failed with output: $push_output"
