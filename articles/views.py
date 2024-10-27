@@ -4,7 +4,9 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='authentication:login')
 def show_articles(request):
     articles = Article.objects.all().order_by("-created_on")
     context = {
@@ -13,7 +15,7 @@ def show_articles(request):
 
     return render(request, "index.html", context)
 
-
+@login_required(login_url='authentication:login')
 def show_article_category(request, category):
     articles = Article.objects.filter(categories__name__contains = category).order_by("-created_on")
     context = {
@@ -23,6 +25,7 @@ def show_article_category(request, category):
 
     return render(request, "category.html", context)
 
+@login_required(login_url='authentication:login')
 def article_content(request, pk):
     article = Article.objects.get(pk=pk)
     comments = Comment.objects.filter(article=article).order_by("-created_on")

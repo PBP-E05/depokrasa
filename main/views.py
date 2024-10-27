@@ -19,6 +19,7 @@ from django.shortcuts import render
 
 
 @csrf_exempt
+@login_required(login_url='authentication:login')
 def insert_restaurant_data(request):
     if request.method == "POST":
         try:
@@ -38,6 +39,7 @@ def insert_restaurant_data(request):
 def my_template_view(request):
     return render(request, 'restaurant_app/template.html')
 
+@login_required(login_url='authentication:login')
 def add_restaurant(request):
     if request.method == "POST":
         try:
@@ -63,7 +65,7 @@ def add_restaurant(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-
+@login_required(login_url='authentication:login')
 def show_main(request):
     # Ambil data restoran dari file JSON
     restaurants = load_restaurants()
@@ -78,6 +80,7 @@ def show_main(request):
     # Render halaman main.html dengan data
     return render(request, 'main.html', context)
 
+@login_required(login_url='authentication:login')
 def load_restaurants():
     # Gunakan double backslash
     json_path = 'datasets\datasets.json'
@@ -90,7 +93,7 @@ def show_news_json(request):
     news = FeaturedNews.objects.all()
     return HttpResponse(serializers.serialize('json', news), content_type='application/json')
 
-@login_required
+@login_required(login_url='authentication:login')
 def create_news_ajax(request):
     if request.method == 'POST':
         try:
@@ -180,6 +183,7 @@ def delete_news(request, id):
     news.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
 
+@login_required(login_url='authentication:login')
 def add_to_wishlist(request):
     if request.method == 'POST':
         user = request.user
