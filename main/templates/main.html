@@ -4,12 +4,136 @@
 {% include 'navbar.html' %}
 
 <div class="bg-primaryBackground w-full min-h-screen pt-32 px-20">
-    <div class="border-2 border-secondary-black w-full h-[38rem]">
-        <div id="news-header"></div>
-        <div id="news-content"></div>
-    </div>
+  {% if user.is_staff %}
+    <button onclick="openModal()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 my-4 rounded-md flex items-center gap-2">
+      Add News
+    </button>
+  {% endif %}
 
-    <!-- Display Food Cards -->
+  <div class="border-2 border-secondary-black w-full">
+    <div id="news-header" class="w-full">
+      <div id="header-container" class="flex flex-row justify-between divide-x-2 divide-primary-black"></div>
+    </div>
+    <div id="news-content" class="w-full">
+      <div id="content-container"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="createNewsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+        <div class="border-b px-6 py-4 flex justify-between items-center bg-primaryBackground ">
+            <h3 class="text-xl font-semibold text-gray-900">Create Featured News</h3>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500 transition-colors">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+            <form id="createNewsForm" method="POST" action="{% url 'main:create_news_ajax' %}" class="space-y-6">
+                {% csrf_token %}
+                <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+                    <h4 class="font-semibold text-gray-700 mb-4">Basic Information</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
+                            <input type="text" name="title" id="title" required
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                        </div>
+                        <div>
+                            <label for="grand_title" class="block text-sm font-medium text-gray-700">Grand Title *</label>
+                            <input type="text" name="grand_title" id="grand_title" required
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                        </div>
+                    </div>
+
+                  <div>
+                        <label for="content" class="block text-sm font-medium text-gray-700">Content *</label>
+                        <textarea name="content" id="content" rows="4" required
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"></textarea>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+                    <h4 class="font-semibold text-gray-700 mb-4">Media</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="icon_image" class="block text-sm font-medium text-gray-700">Icon Image *</label>
+                            <div class="mt-1 flex items-center">
+                                <div class="w-full">
+                                    <input type="file" name="icon_image" id="icon_image" required
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="grand_image" class="block text-sm font-medium text-gray-700">Grand Image *</label>
+                            <div class="mt-1 flex items-center">
+                                <div class="w-full">
+                                    <input type="file" name="grand_image" id="grand_image" required
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+                    <h4 class="font-semibold text-gray-700 mb-4">Recipe Details</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="author" class="block text-sm font-medium text-gray-700">Author *</label>
+                            <input type="text" name="author" id="author" required
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                        </div>
+                        <div>
+                          <label for="cooking_time" class="block text-sm font-medium text-gray-700">Cooking Time (minutes) *</label>
+                          <input type="number" 
+                                 name="cooking_time" 
+                                 id="cooking_time" 
+                                 min="1" 
+                                 required
+                                 placeholder="Enter cooking time in minutes"
+                                 class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                      </div>
+                        <div>
+                            <label for="calories" class="block text-sm font-medium text-gray-700">Calories *</label>
+                            <input type="text" name="calories" id="calories" required
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="time_added" class="block text-sm font-medium text-gray-700">Time Added *</label>
+                        <input type="date" name="time_added" id="time_added" required
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" onclick="closeModal()" 
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                        class="px-6 py-2 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Create News
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+  
+  <!-- Display Food Cards -->
     <div class="container mx-auto py-10">
         <!-- Grid container for 1 column on mobile, 2 columns on small screens, and 3 columns on medium screens -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -19,9 +143,6 @@
                 <div class="relative">
                   <!-- Display the image dynamically by generating the correct path -->
                   <img src="{% static 'media/restaurant/'|add:restaurant.name|add:'-menu-'|add:forloop.counter|add:'.png' %}" alt="{{ menu_item.food_name }}" class="w-full h-60 object-cover">
-
-
-
                 </div>
                 <div class="p-4 space-y-2">
                   <p class="text-lg font-semibold">{{ menu_item.food_name }}</p>
@@ -32,85 +153,175 @@
                     <!-- Smaller button -->
                     <button class="bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Add to wishlist</button>
                   </div>
-                </div>
-              </div>
-            {% endfor %}
-          {% endfor %}
         </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
     </div>
+  </div>
 
-<script>
+  <script>
     async function getNews() {
-        return fetch("{% url 'main:show_news_json' %}")
-            .then(response => response.json())
-            .catch(error => console.error(error));
+      try {
+        const response = await fetch("{% url 'main:show_news_json' %}");
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        return [];
+      }
     }
 
     async function refreshNews() {
-        document.getElementById('news-content').innerHTML = '';
-        document.getElementById('news-content').className = '';
+      const headerContainer = document.getElementById('header-container');
+      const contentContainer = document.getElementById('content-container');
+      
+      headerContainer.innerHTML = '';
+      contentContainer.innerHTML = '';
 
-        document.getElementById('news-header').innerHTML = '';
-        document.getElementById('news-header').className = '';
+      const news = await getNews();
 
-        const news = await getNews();
-        // News header
-        let htmlStringHeader = '';
-        let classNameStringHeader = '';
+      if (!news || news.length === 0) {
+        headerContainer.innerHTML = `
+          <div class="text-center text-lg font-semibold p-4">
+            No news available
+          </div>
+        `;
+        return;
+      }
 
-        if(news.length === 0) {
-          htmlStringHeader = `
-            <div class="text-center text-lg font-semibold p-4">
-              No news available
+      // Create headers
+      let headerHtml = '';
+      news.forEach((newsItem, index) => {
+        const isFirst = index === 0;
+        headerHtml += `
+          <div 
+            onclick="toggleNews(${index})" 
+            class="text-center text-lg font-black w-full py-2 px-6 cursor-pointer hover:bg-hoverBackground border-b-2 border-primary-black ${isFirst ? 'border-b-0' : ''}"
+          >
+            <div class="flex justify-between items-center">
+              <p class="font-manrope">${newsItem.fields.title}</p>
+              <p class="font-playfair">${String(index + 1).padStart(2, '0')}</p>
             </div>
-          `
-        } else {
-          classNameStringHeader = 'flex flex-row justify-between divide-x-2 divide-secondary-black';
-          news.forEach((newsItem, index) => {
-            htmlStringHeader += `
-                <div class="text-center text-lg font-playfair  font-black w-full py-2">
-                    ${String(index + 1).padStart(2, '0')}
-                </div>
-            `
-          });
-        }
+            {% if user.is_staff %}
+              <a href="/delete-news/${newsItem.pk}" class="bg-primary-white border-2 border-tertiaryBackground px-2 rounded-md text-red-500 text-sm font-semibold">
+                Delete
+              </a>
+            {% endif %}
+          </div>
+        `;
+      });
+      headerContainer.innerHTML = headerHtml;
 
-        // Mews content
-        let htmlString = '';
-        let classNameString = '';
-
-        if(news.length === 0) {
-            htmlString = `
-                <div class="text-center text-lg font-semibold p-4">
-                    No news available
-                </div>
-            `
-        } else {
-            classNameString = 'p-4';
-            news.forEach((newsItem) => {
-                htmlString += `
-                    <div class="text-lg font-semibold">
-                        ${newsItem.title}
-                    </div>
-                    <div class="text-sm">
-                        ${newsItem.content}
-                    </div>
-                    <div class="text-sm">
-                        ${newsItem.date}
-                    </div>
-                    <br>
-                `
-            });
-        }
-
-        document.getElementById('news-header').innerHTML = htmlStringHeader;
-        document.getElementById('news-header').className = classNameStringHeader;
-
-        document.getElementById('news-content').innerHTML = htmlString;
-        document.getElementById('news-content').className = classNameString;
+      // Create content sections
+      let contentHtml = '';
+      news.forEach((newsItem, index) => {
+        const isFirst = index === 0;
+        contentHtml += `
+          <div 
+            id="content-${index}" 
+            class="p-6 ${isFirst ? '' : 'hidden'}"
+          >
+            <div class="space-y-4">
+              <h2 class="text-2xl font-semibold">${newsItem.fields.title}</h2>
+              <div class="text-gray-600">
+                ${newsItem.fields.content}
+              </div>
+              <div class="text-sm text-gray-500 italic">
+                ${newsItem.fields.date}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      contentContainer.innerHTML = contentHtml;
     }
-    refreshNews();
-</script>
 
-{% include 'footer.html' %}
-{% endblock %}
+    function toggleNews(index) {
+      const headerDivs = document.querySelectorAll('#header-container > div');
+      const contentDivs = document.querySelectorAll('#content-container > div');
+      
+      // Reset all headers - add bottom border
+      headerDivs.forEach(header => {
+        header.classList.remove('border-b-0');
+        header.classList.add('border-b-2', 'border-primary-black');
+      });
+      
+      // Hide all content divs
+      contentDivs.forEach(content => {
+        content.classList.add('hidden');
+      });
+      
+      // Show selected content and update header
+      const selectedHeader = headerDivs[index];
+      const selectedContent = document.getElementById(`content-${index}`);
+      
+      if (selectedHeader && selectedContent) {
+        selectedHeader.classList.remove('border-b-2', 'border-primary-black');
+        selectedHeader.classList.add('border-b-0');
+        selectedContent.classList.remove('hidden');
+      }
+    }
+
+    refreshNews();
+
+    async function openModal() {
+        const newsItems = await getNews();
+        console.log(newsItems.length);
+
+        if (newsItems.length >= 5) {
+            alert('You cannot add more than 5 news items.');
+            return;
+        }
+
+        document.getElementById('createNewsModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('createNewsModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function setupForm() {
+      const form = document.getElementById('createNewsForm');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        try {
+          const formData = new FormData(form);
+          const response = await fetch("{% url 'main:create_news_ajax' %}", {
+            method: "POST",
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+            }
+          });
+
+          const data = await response.json();
+
+          if (data.status === 'success') {
+            form.reset();
+            closeModal();
+            refreshNews();
+          } else {
+            alert('Failed to create news: ' + data.message);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred while creating news');
+        }
+      });
+    }
+    setupForm();
+
+    document.getElementById('createNewsModal').addEventListener('click', function (e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  </script>
+
+  {% include 'footer.html' %}
+  {% endblock %}
