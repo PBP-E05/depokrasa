@@ -16,7 +16,7 @@ class Category(models.Model):
 
 class Article(models.Model):
     title = models.CharField('Title',max_length=255)
-    featured_img = models.ImageField(upload_to="article_featured_image", blank=True, null=True)
+    featured_img = models.ImageField(upload_to="article_featured_image/", blank=True, null=True)
     body = CKEditor5Field('Text', config_name='default')
     created_on = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
