@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 {% include 'navbar.html' %}
 
@@ -10,22 +11,25 @@
 
     <!-- Display Food Cards -->
     <div class="container mx-auto py-10">
-        <!-- Grid container untuk 1 kolom di mobile, 2 kolom di small screens, dan 3 kolom di medium screens -->
+        <!-- Grid container for 1 column on mobile, 2 columns on small screens, and 3 columns on medium screens -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {% for restaurant in restaurants %}
             {% for menu_item in restaurant.menu %}
               <div class="bg-white rounded-lg shadow-md overflow-hidden relative">
                 <div class="relative">
-                  <!-- Menampilkan gambar menu dengan ukuran yang berbeda-beda -->
-                  <img src="{{ menu_item.image_url }}" alt="{{ menu_item.food_name }}" class="w-full h-60 object-cover">
+                  <!-- Display the image dynamically by generating the correct path -->
+                  <img src="{% static 'media/restaurant/'|add:restaurant.name|add:'-menu-'|add:forloop.counter|add:'.png' %}" alt="{{ menu_item.food_name }}" class="w-full h-60 object-cover">
+
+
+
                 </div>
                 <div class="p-4 space-y-2">
                   <p class="text-lg font-semibold">{{ menu_item.food_name }}</p>
                   <p class="text-gray-500">{{ restaurant.name }}</p>
                   <div class="mt-4 flex items-center justify-between">
-                    <!-- Harga ditempatkan di sebelah kiri -->
-                    <p class="text-green-700 font-bold text-xl">Rp{{ menu_item.price }}</p>
-                    <!-- Tombol lebih kecil -->
+                    <!-- Price on the left -->
+                    <p class="text-orange-500 font-bold text-xl">Rp{{ menu_item.price }}</p>
+                    <!-- Smaller button -->
                     <button class="bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Add to wishlist</button>
                   </div>
                 </div>
