@@ -80,7 +80,7 @@ def show_main(request):
     # Render halaman main.html dengan data
     return render(request, 'main.html', context)
 
-@login_required(login_url='authentication:login')
+# @login_required(login_url='authentication:login')
 def load_restaurants():
     # Gunakan double backslash
     json_path = 'datasets\datasets.json'

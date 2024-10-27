@@ -10,7 +10,7 @@ from decimal import Decimal
 import os
 from django.http import HttpResponse, JsonResponse
 
-@login_required(login_url='authentication:login')
+# @login_required(login_url='authentication:login')
 def load_restaurants():
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
