@@ -28,7 +28,7 @@ PRODUCTION = os.getenv("PRODUCTION", False)
 DEBUG = not PRODUCTION
 # DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "muhammad-wendy-depokrasa.pbp.cs.ui.ac.id", "http://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id", "https://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "muhammad-wendy-depokrasa.pbp.cs.ui.ac.id"]
 
 
 # Application definition
