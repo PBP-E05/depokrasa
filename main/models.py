@@ -22,20 +22,11 @@ class FeaturedNews(models.Model):
 
     def __str__(self):
         return self.title
-    
+
 class Restaurant(models.Model):
     name = models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.name
-
-
 class Menu(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    restaurant = models.ForeignKey(Restaurant, related_name='menus', on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, related_name='menu_items', on_delete=models.CASCADE)
     food_name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    user = models.ForeignKey('auth.User', related_name='menus', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.food_name

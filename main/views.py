@@ -9,6 +9,60 @@ from .models import Menu
 from django.shortcuts import get_object_or_404
 from usermanagement.models import Wishlist
 import json  # Jangan lupa impor modul json
+from django.views.decorators.csrf import csrf_exempt
+
+from django.http import JsonResponse
+from .models import Restaurant, Menu
+import json
+
+from django.shortcuts import render
+
+
+@csrf_exempt
+def insert_restaurant_data(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            restaurant = Restaurant.objects.create(name=data['name'])
+            for item in data['menu']:
+                Menu.objects.create(
+                    restaurant=restaurant,
+                    food_name=item['food_name'],
+                    price=item['price']
+                )
+            return JsonResponse({'message': 'Restaurant and menu added successfully!'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+def my_template_view(request):
+    return render(request, 'restaurant_app/template.html')
+
+def add_restaurant(request):
+    if request.method == "POST":
+        try:
+            # Parsing JSON data dari request body
+            data = json.loads(request.body)
+
+            # Membuat restaurant baru
+            restaurant = Restaurant.objects.create(name=data['name'])
+
+            # Menambahkan menu items ke restaurant
+            for item in data['menu']:
+                Menu.objects.create(
+                    restaurant=restaurant,
+                    food_name=item['food_name'],
+                    price=item['price']
+                )
+            
+            # Mengembalikan response sukses
+            return JsonResponse({'message': 'Restaurant and menu added successfully!'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
 
 def show_main(request):
     # Ambil data restoran dari file JSON
