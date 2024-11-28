@@ -11,44 +11,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 import json
-
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Account created successfully')
-            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
-            if user is not None:
-                login(request, user)
-            return redirect('authentication:login')
-    else:
-        form = UserRegistrationForm()
-    context = {'form': form}
-    return render(request, 'register.html', context)
-
-def login_user(request):
-   if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
-            return response
-        else:
-            messages.error(request, 'Invalid username or password.')
-   else:
-        form = AuthenticationForm(request)
-   context = {'form': form}
-   return render(request, 'login.html', context)
-
-def logout_user(request):
-    logout(request)
-    response = HttpResponseRedirect(reverse('authentication:login'))
-    response.delete_cookie('last_login')
-    return response
+from django.contrib.auth import logout as auth_logout
 
 @csrf_exempt
 def login(request):
@@ -56,10 +19,12 @@ def login(request):
     password = request.POST['password']
     user = authenticate(username=username, password=password)
 
+
     if user is not None:
         if user.is_active:
             auth_login(request, user)
             # Status login sukses.
+            print("hai", user.username)
             return JsonResponse({
                 "username": user.username,
                 "status": True,
@@ -116,3 +81,20 @@ def register_user(request):
             "status": False,
             "message": "Invalid request method."
         }, status=400)
+
+@csrf_exempt
+def logout(request):
+    username = request.user.username
+
+    try:
+        auth_logout(request)
+        return JsonResponse({
+            "username": username,
+            "status": True,
+            "message": "Logout berhasil!"
+        }, status=200)
+    except:
+        return JsonResponse({
+        "status": False,
+        "message": "Logout gagal."
+        }, status=401)
