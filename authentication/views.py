@@ -24,12 +24,11 @@ def login(request):
         if user.is_active:
             auth_login(request, user)
             # Status login sukses.
-            print("hai", user.username)
             return JsonResponse({
                 "username": user.username,
                 "status": True,
-                "message": "Login sukses!"
-                # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
+                "message": "Login sukses!",
+                "isAdmin": user.is_staff
             }, status=200)
         else:
             return JsonResponse({
