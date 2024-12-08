@@ -12,12 +12,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 import json
 from django.contrib.auth import logout as auth_logout
+from django.middleware.csrf import get_token
 
 @csrf_exempt
 def login(request):
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
+    csrf_token = get_token(request)
 
 
     if user is not None:
@@ -28,7 +30,8 @@ def login(request):
                 "username": user.username,
                 "status": True,
                 "message": "Login sukses!",
-                "isAdmin": user.is_staff
+                "isAdmin": user.is_staff,
+                "csrfToken": csrf_token
             }, status=200)
         else:
             return JsonResponse({

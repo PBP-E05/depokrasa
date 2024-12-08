@@ -10,13 +10,13 @@ from django.shortcuts import get_object_or_404
 from usermanagement.models import Wishlist
 import json  # Jangan lupa impor modul json
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 
 from django.http import JsonResponse
 from .models import Restaurant, Menu
 import json
 
 from django.shortcuts import render
-
 
 @csrf_exempt
 @login_required(login_url='authentication:login')
@@ -93,7 +93,7 @@ def show_news_json(request):
     news = FeaturedNews.objects.all()
     return HttpResponse(serializers.serialize('json', news), content_type='application/json')
 
-@login_required(login_url='authentication:login')
+@csrf_exempt
 def create_news_ajax(request):
     if request.method == 'POST':
         try:
@@ -178,6 +178,78 @@ def create_news_ajax(request):
         'message': 'Invalid request method'
     }, status=400)
 
+@csrf_exempt
+def create_news(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body).get('fields')
+            title = data.get('title')
+            content = data.get('content')
+            grand_title = data.get('grand_title')
+            author = data.get('author')
+            cooking_time = data.get('cooking_time')
+            calories = data.get('calories')
+            icon_image = data.get('icon_image')  # Assuming these are URLs or base64 strings
+            grand_image = data.get('grand_image')  # Assuming these are URLs or base64 strings
+
+            if not all([title, content, grand_title, author]):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Title, content, grand title, and author are required'
+                }, status=400)
+
+            time_added = data.get('time_added')
+            created_at = data.get('created_at')
+            updated_at = data.get('updated_at')
+
+            if time_added:
+                time_added = datetime.strptime(time_added, '%Y-%m-%dT%H:%M:%S.%f')
+            if created_at:
+                created_at = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%S.%f')
+            if updated_at:
+                updated_at = datetime.strptime(updated_at, '%Y-%m-%dT%H:%M:%S.%f')
+
+            news = FeaturedNews.objects.create(
+                title=title,
+                content=content,
+                grand_title=grand_title,
+                author=author,
+                cooking_time=cooking_time,
+                calories=calories,
+                icon_image=icon_image,
+                grand_image=grand_image,
+                time_added=time_added,
+                created_at=created_at,
+                updated_at=updated_at,
+            )
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'News created successfully',
+                'news_id': news.id
+            }, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid JSON'
+            }, status=400)
+        except KeyError as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Missing field: {str(e)}'
+            }, status=400)
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'An error occurred: {str(e)}'
+            }, status=400)
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid request method'
+        }, status=405)
+    
 def delete_news(request, id):
     news = FeaturedNews.objects.get(pk=id)
     news.delete()
