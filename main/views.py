@@ -295,10 +295,19 @@ def edit_news(request, id):
             'message': 'Invalid request method'
         }, status=405)
     
+@csrf_exempt
 def delete_news(request, id):
-    news = FeaturedNews.objects.get(pk=id)
-    news.delete()
-    return HttpResponseRedirect(reverse('main:show_main'))
+    if request.method == 'DELETE':
+        try:
+            news = get_object_or_404(FeaturedNews, pk=id)
+            news.delete()
+            return JsonResponse({'status': 'success', 'message': 'News deleted successfully'}, status=200)
+        except FeaturedNews.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'News not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 @login_required(login_url='authentication:login')
 def add_to_wishlist(request):
@@ -316,58 +325,3 @@ def add_to_wishlist(request):
         return JsonResponse({'status': 'success', 'message': 'Item added to wishlist'})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
-
-'''use this code to populate the database with dummy data, using shell
-py manage.py shell -i python
-
-from main.models import FeaturedNews
-
-news_data = [
-    {
-        'title': 'Dummy News Title',
-        'icon_image': 'featured_news/default.jpg',
-        'grand_title': 'Dummy Grand Title',
-        'content': 'This is a dummy content for the news.',
-        'author': 'Author Name',
-        'grand_image': 'featured_news/default.jpg',
-        'cooking_time': 30,
-        'calories': 250,
-        'time_added': '2024-01-01',
-    },
-    {
-        'title': 'Dummy News Title',
-        'icon_image': 'featured_news/default.jpg',
-        'grand_title': 'Dummy Grand Title',
-        'content': 'This is a dummy content for the news.',
-        'author': 'Author Name',
-        'grand_image': 'featured_news/default.jpg',
-        'cooking_time': 30,
-        'calories': 250,
-        'time_added': '2024-01-01',
-    },
-    {
-        'title': 'Dummy News Title',
-        'icon_image': 'featured_news/default.jpg',
-        'grand_title': 'Dummy Grand Title',
-        'content': 'This is a dummy content for the news.',
-        'author': 'Author Name',
-        'grand_image': 'featured_news/default.jpg',
-        'cooking_time': 30,
-        'calories': 250,
-        'time_added': '2024-01-01',
-    },
-]
-
-for news_item in news_data:
-    FeaturedNews.objects.create(
-        title=news_item['title'],
-        icon_image=news_item['icon_image'],
-        grand_title=news_item['grand_title'],
-        content=news_item['content'],
-        author=news_item['author'],
-        grand_image=news_item['grand_image'],
-        cooking_time=news_item['cooking_time'],
-        calories=news_item['calories'],
-        time_added=news_item['time_added']
-    )
-'''
