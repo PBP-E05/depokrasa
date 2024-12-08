@@ -249,6 +249,51 @@ def create_news(request):
             'status': 'error',
             'message': 'Invalid request method'
         }, status=405)
+
+@csrf_exempt
+def edit_news(request, id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body).get('fields')
+            news = get_object_or_404(FeaturedNews, pk=id)
+
+            news.title = data.get('title', news.title)
+            news.content = data.get('content', news.content)
+            news.grand_title = data.get('grand_title', news.grand_title)
+            news.author = data.get('author', news.author)
+            news.cooking_time = data.get('cooking_time', news.cooking_time)
+            news.calories = data.get('calories', news.calories)
+            news.icon_image = data.get('icon_image', news.icon_image)
+            news.grand_image = data.get('grand_image', news.grand_image)
+            news.time_added = data.get('time_added', news.time_added)
+            news.save()
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'News updated successfully',
+                'news_id': news.id
+            }, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid JSON'
+            }, status=400)
+        except KeyError as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Missing field: {str(e)}'
+            }, status=400)
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'An error occurred: {str(e)}'
+            }, status=400)
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid request method'
+        }, status=405)
     
 def delete_news(request, id):
     news = FeaturedNews.objects.get(pk=id)
