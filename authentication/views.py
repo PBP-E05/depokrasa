@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 import json
 from django.middleware.csrf import get_token
+from .models import UserProfile
 
 #for web login
 def login_user(request):
@@ -140,3 +141,70 @@ def logout(request):
         "status": False,
         "message": "Logout gagal."
         }, status=401)
+
+@csrf_exempt
+def get_profile(request):
+    if request.method == 'GET':
+        user = request.user
+        if user.is_authenticated:
+            try:
+                profile = UserProfile.objects.get(user=user)
+                return JsonResponse({
+                    "username": user.username,
+                    "email": profile.email,
+                    "profile_picture": profile.profile_picture.url,
+                    "status": True,
+                    "message": "Profile retrieved successfully."
+                }, status=200)
+            except UserProfile.DoesNotExist:
+                return JsonResponse({
+                    "status": False,
+                    "message": "Profile does not exist."
+                }, status=404)
+        else:
+            return JsonResponse({
+                "status": False,
+                "message": "User is not authenticated."
+            }, status=401)
+    else:
+        return JsonResponse({
+            "status": False,
+            "message": "Invalid request method."
+        }, status=400)
+
+@csrf_exempt
+def update_profile(request):
+    if request.method == 'POST':
+        user = request.user
+        if user.is_authenticated:
+            data = json.loads(request.body)
+            email = data.get('email')
+            profile_picture = data.get('profile_picture')
+
+            try:
+                profile = UserProfile.objects.get(user=user)
+                if email:
+                    profile.email = email
+                if profile_picture:
+                    profile.profile_picture = profile_picture
+                profile.save()
+                return JsonResponse({
+                    "status": True,
+                    "message": "Profile updated successfully."
+                }, status=200)
+            except UserProfile.DoesNotExist:
+                return JsonResponse({
+                    "status": False,
+                    "message": "Profile does not exist."
+                }, status=404)
+        else:
+            return JsonResponse({
+                "status": False,
+                "message": "User is not authenticated."
+            }, status=401)
+    else:
+        return JsonResponse({
+            "status": False,
+            "message": "Invalid request method."
+        }, status=400)
+
