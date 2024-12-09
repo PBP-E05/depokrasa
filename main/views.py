@@ -19,7 +19,7 @@ import json
 from django.shortcuts import render
 
 @csrf_exempt
-@login_required(login_url='authentication:login')
+@login_required(login_url='authentication:login_user')
 def insert_restaurant_data(request):
     if request.method == "POST":
         try:
@@ -39,7 +39,7 @@ def insert_restaurant_data(request):
 def my_template_view(request):
     return render(request, 'restaurant_app/template.html')
 
-@login_required(login_url='authentication:login')
+@login_required(login_url='authentication:login_user')
 def add_restaurant(request):
     if request.method == "POST":
         try:
@@ -65,7 +65,7 @@ def add_restaurant(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-@login_required(login_url='authentication:login')
+@login_required(login_url='authentication:login_user')
 def show_main(request):
     # Ambil data restoran dari file JSON
     restaurants = load_restaurants()
