@@ -1,27 +1,84 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
-from django.db.models import F
 from decimal import Decimal
 import json
-import random
 import os
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import Restaurant, Menu, Discount, Promotion, UserFavoriteRestaurant
+
+def get_restaurant_names(request):
+    """
+    Mengembalikan daftar nama restoran dalam format JSON.
+    """
+    restaurants = Restaurant.objects.values_list('name', flat=True)
+    return JsonResponse(list(restaurants), safe=False)
+
+def discounts_list(request):
+    """
+    Endpoint untuk mendapatkan daftar diskon dalam format JSON.
+    """
+    discounts = Discount.objects.all()
+    serialized_data = serialize_discounts(discounts)
+    return JsonResponse(json.loads(serialized_data), safe=False)
+
+def promotions_list(request):
+    """
+    Endpoint untuk mendapatkan daftar promosi dalam format JSON.
+    """
+    promotions = Promotion.objects.all()
+    serialized_data = serialize_promotions(promotions)
+    return JsonResponse(json.loads(serialized_data), safe=False)
+
+def serialize_discounts(discounts):
+    """
+    Serialize queryset Discount menjadi JSON.
+    """
+    serialized_data = []
+    for discount in discounts:
+        serialized_data.append({
+            'id': discount.id,
+            'food_name': discount.menu_item.food_name,
+            'restaurant_name': discount.menu_item.restaurant.name,
+            'original_price': float(discount.original_price),
+            'discount_percentage': float(discount.discount_percentage),
+            'discounted_price': float(discount.discounted_price),
+            'start_time': discount.start_time.isoformat(),
+            'end_time': discount.end_time.isoformat(),
+        })
+    return json.dumps(serialized_data, cls=DjangoJSONEncoder)
+
+def serialize_promotions(promotions):
+    """
+    Serialize queryset Promotion menjadi JSON.
+    """
+    serialized_data = []
+    for promotion in promotions:
+        serialized_data.append({
+            'id': promotion.id,
+            'restaurant_name': promotion.restaurant.name,
+            'promotion_type': promotion.promotion_type,
+            'description': promotion.description,
+            'start_date': promotion.start_date.isoformat(),
+            'end_date': promotion.end_date.isoformat(),
+        })
+    return json.dumps(serialized_data, cls=DjangoJSONEncoder)
 
 def import_data_from_json(request):
     """
     Mengimpor data restoran dan menu dari file JSON ke database.
     Diskon dan Promosi dikelola melalui admin, jadi tidak di-generate dari sini.
+    Tidak menggunakan field 'location' karena model Restaurant tidak memilikinya.
     """
     json_path = 'datasets/datasets.json'
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
     for restaurant_data in data['restaurants']:
+        # Buat atau dapatkan Restaurant hanya dengan 'name', tanpa location
         restaurant, created = Restaurant.objects.get_or_create(
-            name=restaurant_data['name'], 
+            name=restaurant_data['name']
         )
 
         for menu_item in restaurant_data['menu']:
@@ -35,11 +92,10 @@ def import_data_from_json(request):
 
 def get_active_discounts(restaurants):
     """
-    Mengambil diskon yang aktif untuk restoran yang diberikan.
+    Mengambil diskon yang aktif untuk restoran.
     Diskon aktif jika now <= start_time + duration.
     """
     now = timezone.now()
-    # Filter discount yang menu_item__restaurant terdapat di daftar restaurants
     discounts = Discount.objects.filter(menu_item__restaurant__in=restaurants)
     active_discounts = []
     for d in discounts:
@@ -50,28 +106,28 @@ def get_active_discounts(restaurants):
 
 def get_active_promotions(restaurants):
     """
-    Mengambil promosi yang masih aktif (end_date > now) untuk restoran yang diberikan.
+    Mengambil promosi yang masih aktif (end_date > now) untuk restoran.
     """
     now = timezone.now()
     return Promotion.objects.filter(restaurant__in=restaurants, end_date__gt=now)
 
-@login_required(login_url='authentication:login')
 def promotions_and_discounts_list(request):
     """
-    Menampilkan daftar diskon dan promosi.  
-    Jika user telah memilih restoran favorit (via GET param), maka hanya restoran tersebut yang ditampilkan.
-    Jika belum memilih, tampilkan pesan untuk memilih restoran.
-    Jika tidak ada diskon/promosi, tampilkan pesan bahwa saat ini tidak tersedia.
+    Menampilkan daftar diskon dan promosi dalam format HTML.
+    Menggunakan nama restoran dari model Restaurant (tanpa location).
+    Jika user telah memilih restoran favorit, tampilkan hanya untuk restoran tersebut.
+    Jika tidak, tampilkan semua.
+    Batasi diskon dan promosi hingga 6 item.
     """
-
     selected_restaurant_names = request.GET.getlist('selected_restaurants')
 
     if not selected_restaurant_names:
+        # Jika tidak ada filter restoran, tampilkan semua restoran
         restaurants = Restaurant.objects.all()
     else:
         restaurants = Restaurant.objects.filter(name__in=selected_restaurant_names)
     
-    # Ambil diskon yang aktif
+    # Ambil diskon aktif (maksimal 6)
     active_discounts = get_active_discounts(restaurants)[:6]
     discounted_foods = []
     for d in active_discounts:
@@ -81,14 +137,14 @@ def promotions_and_discounts_list(request):
             'original_price': d.original_price,
             'discount_percentage': d.discount_percentage,
             'discounted_price': d.discounted_price,
-            'start_time': d.start_time.isoformat(),  # Format ISO 8601
-            'duration_seconds': int(d.duration.total_seconds()),  # Konversi ke detik
+            'start_time': d.start_time.isoformat(),
+            'duration_seconds': int(d.duration.total_seconds()),
         })
 
-    # Ambil promosi yang aktif
+    # Ambil promosi aktif (maksimal 6)
     active_promotions = get_active_promotions(restaurants)[:6]
 
-    # Jika tidak ada diskon dan tidak ada promosi
+    # Logika pesan dan pengembalian template
     if not discounted_foods and not active_promotions:
         return render(request, 'promotions_discounts/list.html', {
             'discounted_foods': [],
@@ -96,7 +152,6 @@ def promotions_and_discounts_list(request):
             'message': "Maaf, saat ini tidak ada diskon atau promosi."
         })
 
-    # Jika tidak ada diskon
     if not discounted_foods and active_promotions:
         return render(request, 'promotions_discounts/list.html', {
             'discounted_foods': [],
@@ -104,7 +159,6 @@ def promotions_and_discounts_list(request):
             'message': "Maaf, tidak ada diskon yang tersedia."
         })
 
-    # Jika tidak ada promosi
     if discounted_foods and not active_promotions:
         return render(request, 'promotions_discounts/list.html', {
             'discounted_foods': discounted_foods,
@@ -118,20 +172,15 @@ def promotions_and_discounts_list(request):
         'message': ""
     })
 
-@login_required(login_url='authentication:login')
 def delete_expired_discounts(request):
     """
-    Menghapus diskon dan promosi yang telah kedaluwarsa.
-    Diskon kedaluwarsa jika now > start_time + duration.
-    Promosi kedaluwarsa jika now > end_date.
+    Menghapus diskon dan promosi yang telah kadaluwarsa.
+    Dikembalikan dalam format JSON.
     """
     if request.method == 'POST':
         now = timezone.now()
         
         # Hapus diskon yang expired
-        # Diskon expired jika start_time + duration < now
-        # Gunakan annotate untuk menghitung end_time: end_time = start_time + duration
-        # Karena DurationField tidak bisa langsung dalam filter, kita bisa filter secara manual
         expired_discounts = []
         for discount in Discount.objects.all():
             if discount.start_time + discount.duration < now:
@@ -152,14 +201,11 @@ def delete_expired_discounts(request):
         })
     return JsonResponse({'deleted': False})
 
-@login_required(login_url='authentication:login')
 def select_favorite_restaurants(request):
     """
-    View ini untuk memilih restoran favorit, mungkin dengan form atau checkbox.
-    Setelah dipilih, user akan diarahkan ke promotions_and_discounts_list 
-    dengan query param terpilih.
+    Memilih restoran favorit. Karena model Restaurant tidak punya location,
+    kita hanya tampilkan nama restoran.
     """
-    # Misal kita menampilkan semua restoran yang ada untuk dipilih.
     restaurants = Restaurant.objects.all()
     if request.method == 'POST':
         selected = request.POST.getlist('restaurants')
@@ -167,7 +213,7 @@ def select_favorite_restaurants(request):
             query_param = "&".join([f"selected_restaurants={name}" for name in selected])
             return redirect(f'/promotions-and-discounts/?{query_param}')
         else:
-            # Jika tidak ada yang dipilih
+            # Tidak memilih apapun
             return render(request, 'promotions_discounts/select_favorite_restaurants.html', {
                 'restaurants': restaurants,
                 'message': "Anda belum memilih restoran apapun."
