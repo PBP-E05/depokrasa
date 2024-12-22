@@ -51,7 +51,7 @@
                             <i class="fa fa-solid fa-gear"></i>
                             <span class="text-xl pb-0.5">Settings</span>
                         </a>
-                        <a href='{% url "authentication:logout" %}' class="flex flex-row items-center gap-2 text-red-500 hover:bg-red-500 hover:text-primaryBackground px-2 py-0.5 w-max rounded-lg">
+                        <a href='{% url "authentication:logout_user" %}' class="flex flex-row items-center gap-2 text-red-500 hover:bg-red-500 hover:text-primaryBackground px-2 py-0.5 w-max rounded-lg">
                             <i class="fa fa-solid fa-arrow-right-from-bracket"></i>
                             <span class="font-semibold text-xl">Logout<span>
                         </a>
@@ -98,7 +98,7 @@
             <span class="text-xl pb-0.5">Settings</span>
         </a>
         
-        <a href='{% url "authentication:logout" %}' class="flex flex-row items-center gap-2 text-red-500 w-max mb-8">
+        <a href='{% url "authentication:logout_user" %}' class="flex flex-row items-center gap-2 text-red-500 w-max mb-8">
             <i class="fa fa-solid fa-arrow-right-from-bracket"></i>
             <span class="font-semibold text-xl">Logout<span>
         </a>

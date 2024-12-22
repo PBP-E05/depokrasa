@@ -12,7 +12,7 @@
             <p class="text-gray-500 mt-2">Sign in to continue your culinary journey</p>
         </div>
 
-        <form method="POST" class="space-y-6">
+        <form method="POST" action="{% url 'authentication:login_user' %}" class="space-y-6">
             {% csrf_token %}
 
             {% if form.errors %}
@@ -85,7 +85,7 @@
 
             <div class="text-center text-sm text-gray-500">
                 Don't have an account?
-                <a href="{% url 'authentication:register' %}" class="text-orange-500 hover:text-orange-600 font-medium">
+                <a href="{% url 'authentication:register_user' %}" class="text-orange-500 hover:text-orange-600 font-medium">
                     Create account
                 </a>
             </div>

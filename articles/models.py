@@ -45,17 +45,16 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.author.username} on {self.article.title}"
     
-    def get_author_data(self):
-        return {
-            'username': self.author.username,
-            'profile_picture': self.author.userprofile.profile_picture.url if hasattr(self.author, 'userprofile') and self.author.userprofile.profile_picture else '/media/profile_pictures/default.jpg'
-        }
-    
     def to_dict(self):
         return {
             'id': self.id,
             'body': self.body,
             'created_on': self.created_on.isoformat(),
-            'author': self.get_author_data(),
+            'author': {
+                'username': self.author.username,
+                'profile_picture': self.author.userprofile.profile_picture.url 
+                if hasattr(self.author, 'userprofile') and self.author.userprofile.profile_picture 
+                else '/media/profile_pictures/default.jpg'
+            },
             'article_id': self.article_id
         }

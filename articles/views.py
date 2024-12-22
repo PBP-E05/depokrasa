@@ -1,4 +1,4 @@
-from articles.models import Article, Comment
+from articles.models import Article, Category, Comment
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -46,12 +46,16 @@ def show_articles_by_category_json(request, category):
     data = [article.to_dict() for article in articles]
     return JsonResponse(data, safe=False)
 
-def show_comments_json(request):
-    article_id = request.GET.get('article_id')
-    if not article_id:
-        return JsonResponse([], safe=False)
-    
-    comments = Comment.objects.filter(article_id=article_id).select_related('author').order_by("-created_on")
+def show_categories_json(request):
+    categories = list(Category.objects.all().order_by("name").values('name'))
+    return JsonResponse(categories, safe=False)
+
+def show_article_by_id_json(request, pk):
+    article = Article.objects.get(pk=pk)
+    return JsonResponse(article.to_dict(), safe=False)
+
+def show_comments_json(request,pk):
+    comments = Comment.objects.filter(article_id=pk).select_related('author').order_by("-created_on")
     comments_data = [comment.to_dict() for comment in comments]
     
     return JsonResponse(comments_data, safe=False)
