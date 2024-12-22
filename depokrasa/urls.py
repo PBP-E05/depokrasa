@@ -6,7 +6,7 @@ from promotions_discounts import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('main.urls')),
+    path('', include('main.urls', namespace='main')),
     path('auth/', include('authentication.urls', namespace='authentication')),
     path('user/', include('usermanagement.urls', namespace='usermanagement')),
     path('promotions/', include('promotions_discounts.urls', namespace='promotions_discounts')),

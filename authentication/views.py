@@ -42,7 +42,7 @@ def register_user(request):
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             if user is not None:
                 auth_login(request, user)
-            return redirect('authentication:login')
+            return redirect('authentication:login_user')
     else:
         form = UserRegistrationForm()
     context = {'form': form}
