@@ -9,3 +9,4 @@ Pillow
 django-ckeditor-5
 coverage
 django-cors-headers
+djangorestframework

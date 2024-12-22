@@ -47,6 +47,7 @@ def show_articles_by_category_json(request, category):
     return JsonResponse(data, safe=False)
 
 def show_categories_json(request):
+    '''Return all available categories'''
     categories = list(Category.objects.all().order_by("name").values('name'))
     return JsonResponse(categories, safe=False)
 
