@@ -65,27 +65,12 @@ def add_restaurant(request):
 
 def get_restaurants(request):
     # Get all restaurants
-    restaurants = Restaurant.objects.all()
-    data = []
+    json_path = 'datasets\datasets.json'
 
-    for restaurant in restaurants:
-        # Get the menu for each restaurant
-        menu_items = Menu.objects.filter(restaurant=restaurant)
-        menu_data = []
+    with open(json_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
 
-        for item in menu_items:
-            menu_data.append({
-                'food_name': item.food_name,
-                'price': item.price,
-                'image_url': os.path.join(settings.MEDIA_URL, 'restaurant', restaurant.name.replace(' ', '-'), f'{item.food_name.replace(" ", "-").lower()}.png')
-            })
-        
-        data.append({
-            'name': restaurant.name,
-            'menu': menu_data
-        })
-
-    return JsonResponse({'restaurants': data}, safe=False)
+    return JsonResponse(data['restaurants'], safe=False)
 
 
 @login_required(login_url='authentication:login_user')
