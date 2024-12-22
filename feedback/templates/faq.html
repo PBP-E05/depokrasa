@@ -78,8 +78,8 @@
     <div class="modal-content">
         <form id="feedbackForm" method="post">
             <h2 class="title-font mb-1 text-lg font-medium text-gray-900">Feedback</h2>
-            <p class="mb-5 leading-relaxed text-gray-600">If you had any issues or you liked our product, please share
-                with us!
+            <p class="mb-5 leading-relaxed text-gray-600">
+                If you had any issues or you liked our product, please share with us!
             </p>
             {% csrf_token %}
             <div class="form-group">
@@ -90,7 +90,9 @@
                 {{ form.message.label_tag }}
                 {{ form.message }}
             </div>
-            <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition duration-150 ease-in-out">Submit</button>
+            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition duration-150 ease-in-out">
+                Submit
+            </button>
         </form>
         <div id="formFeedback"></div>
         <span id="closeModal" class="close-btn">&times;</span>
