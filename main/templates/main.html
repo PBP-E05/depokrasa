@@ -10,7 +10,7 @@
     </button>
   {% endif %}
 
-  <div class="border-2 border-secondary-black w-full">
+  <div class="border-2 border-secondary-black w-full h-[38rem]">
     <div id="news-header" class="w-full">
       <div id="header-container" class="flex flex-row justify-between divide-x-2 divide-primary-black"></div>
     </div>
@@ -132,34 +132,59 @@
         </div>
     </div>
   </div>
-  
-  <!-- Display Food Cards -->
-    <div class="container mx-auto py-10">
-        <!-- Grid container for 1 column on mobile, 2 columns on small screens, and 3 columns on medium screens -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {% for restaurant in restaurants %}
-            {% for menu_item in restaurant.menu %}
-              <div class="bg-white rounded-lg shadow-md overflow-hidden relative">
-                <div class="relative">
-                  <!-- Display the image dynamically by generating the correct path -->
-                  <img src="{% static 'media/restaurant/'|add:restaurant.name|add:'-menu-'|add:forloop.counter|add:'.png' %}" alt="{{ menu_item.food_name }}" class="w-full h-60 object-cover">
-                </div>
-                <div class="p-4 space-y-2">
-                  <p class="text-lg font-semibold">{{ menu_item.food_name }}</p>
-                  <p class="text-gray-500">{{ restaurant.name }}</p>
-                  <div class="mt-4 flex items-center justify-between">
-                    <!-- Price on the left -->
-                    <p class="text-orange-500 font-bold text-xl">Rp{{ menu_item.price }}</p>
-                    <!-- Smaller button -->
-                    <button class="bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Add to wishlist</button>
-                  </div>
-        </div>
-      </div>
-      {% endfor %}
-      {% endfor %}
-    </div>
-  </div>
 
+  
+  <div class="container mx-auto py-10">
+    <!-- Grid container for 1 column on mobile, 2 columns on small screens, and 3 columns on medium screens -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="product-grid">
+        {% for restaurant in restaurants %}
+            {% for menu_item in restaurant.menu %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden relative product-item hidden">
+                    <div class="relative">
+                        <!-- Displaying menu image with different sizes -->
+                        <img src="{{ MEDIA_URL }}media/restaurant/{{ restaurant.name|slugify }}/{{ restaurant.name|slugify|add:'-menu-' }}{{ forloop.counter }}.png" alt="{{ menu_item.food_name }}" class="w-full h-60 object-cover">
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <p class="text-lg font-semibold">{{ menu_item.food_name }}</p>
+                        <p class="text-gray-500">{{ restaurant.name }}</p>
+                        <div class="mt-4 flex items-center justify-between">
+                            <!-- Price on the left -->
+                            <p class="text-orange-500 font-bold text-xl">Rp{{ menu_item.price }}</p>
+                            <!-- Smaller button -->
+                            <button class="bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm">Add to wishlist</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <!-- "Show More" button -->
+    <div class="flex justify-center mt-8">
+        <button id="show-more-btn" class="bg-orange-500 text-white px-6 py-3 rounded-lg">
+            Show More
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const productItems = document.querySelectorAll('.product-item');
+        const showMoreBtn = document.getElementById('show-more-btn');
+        const initialItemsToShow = 6;
+
+        // Initially show only the first 6 products
+        for (let i = 0; i < initialItemsToShow && i < productItems.length; i++) {
+            productItems[i].classList.remove('hidden');
+        }
+
+        // Handle Show More button click
+        showMoreBtn.addEventListener('click', function () {
+            productItems.forEach((item) => item.classList.remove('hidden'));
+            showMoreBtn.classList.add('hidden'); // Hide the button once all items are shown
+        });
+    });
+</script>
   <script>
     async function getNews() {
       try {
@@ -215,58 +240,70 @@
       // Create content sections
       let contentHtml = '';
       news.forEach((newsItem, index) => {
-        console.log(newsItem.fields.grand_image);
         const isFirst = index === 0;
+
+        const grandTitleWords = newsItem.fields.grand_title.split(' ');
+        const grandTitleHtml = grandTitleWords.map((word, i) => {
+                    if (i === 1) {
+                        return `<span class="text-tertiaryBackground underline decoration-green-500">${word}</span>`;
+                    }
+                    return word;
+                }).join(' ');
+
         contentHtml += `
           <div
             id="content-${index}"
-            class="p-6 ${isFirst ? '' : 'hidden'}"
+            class="p-8 ${isFirst ? '' : 'hidden'}"
           >
-            <div class="space-y-6">
-              ${newsItem.fields.grand_image ? 
-                `<img src="/media/${newsItem.fields.grand_image}" alt="${newsItem.fields.grand_title}" 
-                class="w-full h-64 object-cover rounded-lg shadow-lg">` : ''
-              }
-              
-              <div class="space-y-4">
-                <h1 class="text-3xl font-bold font-playfair">${newsItem.fields.grand_title}</h1>
+            <div class="flex flex-row gap-8 justify-between">
+              <div class="w-[50%] flex flex-col justify-between">
+                <h1 class="text-7xl font-bold font-playfair items-center">
+                  <span class="inline-block w-12 h-12 bg-tertiaryBackground rounded-full mr-2"></span> 
+                  ${grandTitleHtml}
+                </h1>
                 
-                <div class="flex items-center space-x-4 text-sm text-gray-600">
-                  <div class="flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    ${newsItem.fields.cooking_time} mins
-                  </div>
-                  <div class="flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    ${newsItem.fields.calories} kcal
-                  </div>
-                  <div class="flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    ${newsItem.fields.author}
-                  </div>
-                </div>
-
-                <div class="prose prose-lg max-w-none">
+                <div class="prose prose-lg max-w-none font-manrope">
                   ${newsItem.fields.content}
                 </div>
-
-                <div class="flex justify-between items-center text-sm text-gray-500">
-                  <div>
-                    Added: ${newsItem.fields.time_added}
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center space-x-4 text-sm text-gray-600 font-manrope">
+                    <div class="flex flex-row gap-2 items-center text-tertiaryBackground">
+                      <div class="border-b-2 border-tertiaryBackground w-4"></div>
+                      <span class="font-semibold text-xl">${newsItem.fields.author}</span>
+                    </div>
+                    <div class="border-b-2 border-primary-black w-28"></div>
+                    <div class="flex items-center">
+                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      ${newsItem.fields.cooking_time} mins
+                    </div>
+                    <div class="flex items-center">
+                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      ${newsItem.fields.calories} kcal
+                    </div>
                   </div>
-                  <div>
-                    Last updated: ${new Date(newsItem.fields.updated_at).toLocaleDateString()}
+
+                  <div class="flex justify-between items-center text-sm text-gray-500">
+                    <div>
+                      Added: ${newsItem.fields.time_added}
+                    </div>
+                    <div>
+                      Last updated: ${new Date(newsItem.fields.updated_at).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
+              </div>
+
+              <div class="w-[50%]">
+                ${newsItem.fields.grand_image ? 
+                  `<img src="/media/${newsItem.fields.grand_image}" alt="${newsItem.fields.grand_title}" 
+                  class="w-full h-[29.4rem] object-cover">` : ''
+                }
               </div>
             </div>
           </div>

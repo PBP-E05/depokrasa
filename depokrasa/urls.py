@@ -11,7 +11,6 @@ urlpatterns = [
     path('user/', include('usermanagement.urls', namespace='usermanagement')),
     path('promotions/', include('promotions_discounts.urls', namespace='promotions_discounts')),
     path('articles/', include('articles.urls', namespace='articles')),
-    path('select_favorites/', views.select_favorite_shops, name='select_favorite_shops'),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('feedback/', include('feedback.urls', namespace='feedback')),
 ]

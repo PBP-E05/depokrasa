@@ -28,7 +28,7 @@ PRODUCTION = os.getenv("PRODUCTION", False)
 DEBUG = not PRODUCTION
 # DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "muhammad-wendy-depokrasa.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "muhammad-wendy-depokrasa.pbp.cs.ui.ac.id", "muhammad-wendy-depokrasa2.pbp.cs.ui.ac.id"]
 
 
 # Application definition
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'articles',
     'django_ckeditor_5',
     'feedback',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'depokrasa.urls'
@@ -238,7 +240,15 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY=None
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1", "http://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id", "https://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id"]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'

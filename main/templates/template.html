@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Restaurant</title>
+</head>
+<body>
+    <h1>Add Restaurant and Menu</h1>
+    <button id="addRestaurantBtn">Add Restaurant</button>
+
+    <script>
+        document.getElementById('addRestaurantBtn').addEventListener('click', function() {
+            // Data restaurant yang akan diinput
+            const restaurantData = {
+                name: "Mujigae",
+                menu: [
+                    {
+                        food_name: "Korean Chicken Steak",
+                        price: 28000
+                    },
+                    {
+                        food_name: "Dosirak Chicken Bulgogi",
+                        price: 29500
+                    },
+                    {
+                        food_name: "Topokki with Mandu",
+                        price: 61000
+                    }
+                ]
+            };
+
+            // Mengirimkan data menggunakan fetch()
+            fetch('/add-restaurant/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // pastikan CSRF token disertakan
+                },
+                body: JSON.stringify(restaurantData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);  // Menampilkan pesan sukses
+                } else if (data.error) {
+                    alert(data.error);  // Menampilkan error jika ada
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Fungsi untuk mendapatkan CSRF token dari cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Mencocokkan cookie dengan nama yang diberikan
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
