@@ -84,7 +84,9 @@ DepokRasa adalah aplikasi yang bertujuan untuk memberikan informasi tentang berb
 
 2. **Admin**: Administrator yang dapat mengelola pengguna, memoderasi daftar produk, dan memastikan kelancaran operasi platform.
    - **Fitur Utama**: Mengelola pengguna, melihat dan mengelola menu makanan, mengelola dan memoderasi artikel.
-   - **Views**: Admin Panel (menggunakan Django Admin).
+   - **Views**: Admin Panel (menggunakan Django Admin)
 
 ## Tautan Deployment
 Aplikasi ini dapat diakses di: [DepokRasa](http://muhammad-wendy-depokrasa.pbp.cs.ui.ac.id/)
+
+Atau disini: [DepokRasa2](http://muhammad-wendy-depokrasa2.pbp.cs.ui.ac.id/)

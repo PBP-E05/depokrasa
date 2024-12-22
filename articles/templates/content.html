@@ -10,7 +10,7 @@
 {% endblock page_title %}
 
 <div class="flex justify-center items-center bg-white w-full h-40 border border-black-500 rounded-lg mb-4">
-    <img src="{{ article.featured_img }}" alt="Featured Image" class="object-contain w-full h-full">
+    <img src="{{ article.featured_img.url }}" alt="Featured Image" class="object-contain w-full h-full">
 </div>
 <div class="text-gray-400 text-xs">
     {{ article.created_on.date }} | Categories:
@@ -70,7 +70,7 @@
 <script>
     async function getComments() {
         const articleId = {{ article.id }}; 
-        const response = await fetch(`{% url 'articles:show_comments_json' %}?article_id=${articleId}`);
+        const response = await fetch(`{% url 'articles:show_comments_json' pk=article.id %}`);
         const data = await response.json();
         return data;
     }
@@ -85,7 +85,7 @@
         })
         .then(response => {
         refreshComments();
-        hideModal;})
+        hideModal();})
         
         document.getElementById("commentForm").reset();
         document.querySelector("[data-modal-toggle='crudModal']").click();
