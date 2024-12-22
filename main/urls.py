@@ -15,4 +15,6 @@ urlpatterns = [
     path('show-template/', views.my_template_view, name='show_template'),
     path('insert_data/', views.insert_restaurant_data, name='insert_data'),
     path('add-to-wishlist/', add_to_wishlist, name='add_to_wishlist'),
+    path('api/restaurants/', views.get_restaurants, name='get_restaurants'),
+
 ]
