@@ -15,8 +15,8 @@ from datetime import datetime
 from django.http import JsonResponse
 from .models import Restaurant, Menu
 import json
-
 from django.shortcuts import render
+import os;
 
 @csrf_exempt
 @login_required(login_url='authentication:login_user')
@@ -63,6 +63,30 @@ def add_restaurant(request):
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def get_restaurants(request):
+    # Get all restaurants
+    restaurants = Restaurant.objects.all()
+    data = []
+
+    for restaurant in restaurants:
+        # Get the menu for each restaurant
+        menu_items = Menu.objects.filter(restaurant=restaurant)
+        menu_data = []
+
+        for item in menu_items:
+            menu_data.append({
+                'food_name': item.food_name,
+                'price': item.price,
+                'image_url': os.path.join(settings.MEDIA_URL, 'restaurant', restaurant.name.replace(' ', '-'), f'{item.food_name.replace(" ", "-").lower()}.png')
+            })
+        
+        data.append({
+            'name': restaurant.name,
+            'menu': menu_data
+        })
+
+    return JsonResponse({'restaurants': data}, safe=False)
 
 
 @login_required(login_url='authentication:login_user')
