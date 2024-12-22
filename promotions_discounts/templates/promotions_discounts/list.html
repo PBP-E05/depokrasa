@@ -6,10 +6,7 @@
 
 <div class="min-h-screen bg-gradient-to-b from-orange-50 to-white">
     <div class="container mx-auto px-4 py-12">
-        <br>
-        <br>
-        <br>
-        <br>
+        <br><br><br><br>
         <!-- Header Section dengan animasi fade-in -->
         <div class="text-center mb-12 animate-fade-in">
             <h1 class="text-4xl font-bold text-gray-900 mb-3">Makanan dengan Diskon</h1>
@@ -18,16 +15,17 @@
 
         <!-- Filter Button dengan efek hover yang lebih menarik -->
         <div class="text-center mb-12">
-            <a href="{% url 'promotions_discounts:select_favorite_shops' %}" 
+            <a href="{% url 'promotions_discounts:select_favorite_restaurants' %}"
                class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full font-medium hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                 </svg>
                 Filter Berdasarkan Restoran
             </a>
         </div>
 
-        <!-- Discounted Foods Section dengan card design yang lebih modern -->
+        <!-- Discounted Foods Section -->
         <div class="mb-16">
             <h2 class="text-3xl font-bold mb-8 text-center text-gray-900">Kupon Diskon</h2>
             {% if discounted_foods %}
@@ -46,7 +44,7 @@
                                 <!-- Content Section -->
                                 <div class="p-6">
                                     <h3 class="text-xl font-bold text-gray-900 mb-2">{{ food.food_name }}</h3>
-                                    <p class="text-gray-600 mb-4">{{ food.shop_name }}</p>
+                                    <p class="text-gray-600 mb-4">{{ food.restaurant_name }}</p>
                                     
                                     <div class="flex justify-between items-center mb-4">
                                         <span class="text-sm text-gray-500 line-through">Rp {{ food.original_price|floatformat:2 }}</span>
@@ -56,9 +54,7 @@
                                     <!-- Timer dengan styling yang lebih menarik -->
                                     <div class="bg-gray-50 rounded-lg p-3">
                                         <p class="text-sm text-gray-600">Berlaku hingga:</p>
-                                        <p class="text-lg font-semibold text-gray-800" id="timer-{{ forloop.counter }}">
-                                            {{ food.valid_until|date:"d M Y" }}
-                                        </p>
+                                        <p class="text-lg font-semibold text-gray-800" id="timer-{{ forloop.counter }}"></p>
                                     </div>
                                 </div>
                             </div>
@@ -66,13 +62,16 @@
 
                         <script>
                             document.addEventListener("DOMContentLoaded", function () {
-                                const endDate = new Date("{{ food.valid_until|date:'c' }}");
+                                const startTime = new Date("{{ food.start_time }}");  // Format ISO 8601
+                                const durationInMs = {{ food.duration_seconds }} * 1000;  // Konversi ke milidetik
+                                const endTime = new Date(startTime.getTime() + durationInMs);
+                        
                                 const timerElement = document.getElementById("timer-{{ forloop.counter }}");
-
+                        
                                 function updateTimer() {
                                     const now = new Date().getTime();
-                                    const distance = endDate - now;
-
+                                    const distance = endTime - now;
+                        
                                     if (distance < 0) {
                                         clearInterval(interval);
                                         timerElement.innerHTML = '<span class="text-red-500">Kadaluarsa</span>';
@@ -80,27 +79,29 @@
                                         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                                         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                                         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                        timerElement.innerHTML = `<span class="text-green-500">${days}h ${hours}j ${minutes}m</span>`;
+                                        timerElement.innerHTML = `${days}h ${hours}j ${minutes}m`;
                                     }
                                 }
-
+                        
                                 const interval = setInterval(updateTimer, 1000);
                                 updateTimer();
                             });
-                        </script>
+                        </script>  
+                        
                     {% endfor %}
                 </div>
             {% else %}
                 <div class="text-center py-12 bg-gray-50 rounded-lg">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <p class="mt-4 text-gray-500">Tidak ada diskon aktif saat ini.</p>
                 </div>
             {% endif %}
         </div>
 
-        <!-- Active Promotions Section dengan desain yang lebih modern -->
+        <!-- Active Promotions Section -->
         <div class="mb-16">
             <h2 class="text-3xl font-bold mb-8 text-center text-gray-900">Promosi Aktif</h2>
             {% if promotions %}
@@ -111,11 +112,12 @@
                                 <div class="flex items-center justify-center mb-4">
                                     <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100">
                                         <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
-                        </svg>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                                        </svg>
                                     </span>
                                 </div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-2 text-center">{{ promotion.shop.name }}</h3>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 text-center">{{ promotion.restaurant.name }}</h3>
                                 <p class="text-lg font-semibold text-orange-500 mb-3 text-center">{{ promotion.promotion_type }}</p>
                                 <p class="text-gray-600 mb-4 text-center">{{ promotion.description }}</p>
                                 <div class="bg-gray-50 rounded-lg p-3 text-center">
@@ -129,7 +131,8 @@
             {% else %}
                 <div class="text-center py-12 bg-gray-50 rounded-lg">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                     </svg>
                     <p class="mt-4 text-gray-500">Tidak ada promosi aktif saat ini.</p>
                 </div>
