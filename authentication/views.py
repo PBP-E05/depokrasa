@@ -208,3 +208,11 @@ def update_profile(request):
             "message": "Invalid request method."
         }, status=400)
 
+def get_restaurants(request):
+    # Get all restaurants
+    json_path = 'datasets\datasets.json'
+
+    with open(json_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+    return JsonResponse(data['restaurants'], safe=False)
