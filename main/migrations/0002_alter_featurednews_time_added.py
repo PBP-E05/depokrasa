@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='featurednews',
             name='time_added',
-            field=models.DateField(default='02/12'),
+            field=models.DateField(default='28/10'),
         ),
     ]
