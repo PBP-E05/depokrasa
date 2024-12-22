@@ -63,14 +63,6 @@ def add_restaurant(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def get_restaurants(request):
-    # Get all restaurants
-    json_path = 'datasets\datasets.json'
-
-    with open(json_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-
-    return JsonResponse(data['restaurants'], safe=False)
 
 
 @login_required(login_url='authentication:login_user')
@@ -88,10 +80,19 @@ def show_main(request):
     # Render halaman main.html dengan data
     return render(request, 'main.html', context)
 
+def get_restaurants(request):
+    # Get all restaurants
+    json_path = 'datasets/datasets.json'
+
+    with open(json_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+    return JsonResponse(data['restaurants'], safe=False)
+
 # @login_required(login_url='authentication:login')
 def load_restaurants():
     # Gunakan double backslash
-    json_path = 'datasets\datasets.json'
+    json_path = 'datasets/datasets.json'
 
     with open(json_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
