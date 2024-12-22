@@ -14,7 +14,8 @@ urlpatterns = [
     path('add-restaurant/', views.add_restaurant, name='add_restaurant'),
     path('show-template/', views.my_template_view, name='show_template'),
     path('insert_data/', views.insert_restaurant_data, name='insert_data'),
-    path('add-to-wishlist/', add_to_wishlist, name='add_to_wishlist'),
     path('api/restaurants/', views.get_restaurants, name='get_restaurants'),
-
+    path('wishlist/add/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('wishlist/', views.get_wishlist, name='get_wishlist'),
+    path('wishlist/delete/', views.delete_from_wishlist, name='delete_from_wishlist'),
 ]

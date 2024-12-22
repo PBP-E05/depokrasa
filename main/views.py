@@ -318,7 +318,7 @@ def delete_news(request, id):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
-@login_required(login_url='authentication:login')
+@csrf_exempt
 def add_to_wishlist(request):
     if request.method == 'POST':
         user = request.user
@@ -332,5 +332,35 @@ def add_to_wishlist(request):
         wishlist_item.save()
 
         return JsonResponse({'status': 'success', 'message': 'Item added to wishlist'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def get_wishlist(request):
+    user = request.user
+    wishlist_items = Wishlist.objects.filter(user=user).select_related('product')
+    wishlist_data = [
+        {
+            'id': item.product.id,
+            'food_name': item.product.food_name,
+            'price': item.product.price
+        }
+        for item in wishlist_items
+    ]
+    return JsonResponse({'status': 'success', 'wishlist': wishlist_data}, status=200)
+
+@csrf_exempt
+def delete_from_wishlist(request):
+    if request.method == 'DELETE':
+        user = request.user
+        product_id = json.loads(request.body).get('product_id')
+        product = get_object_or_404(Menu, id=product_id)
+
+        wishlist_item = Wishlist.objects.filter(user=user, product=product).first()
+        if wishlist_item:
+            wishlist_item.delete()
+            return JsonResponse({'status': 'success', 'message': 'Item removed from wishlist'}, status=200)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Item not found in wishlist'}, status=404)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
