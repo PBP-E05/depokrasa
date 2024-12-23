@@ -96,6 +96,8 @@ def my_template_view(request):
 def show_main(request):
     # Ambil data restoran dari file JSON
     restaurants = load_restaurants()
+    # Simpan data ke database
+    save_to_db(restaurants)
 
     # Buat context yang berisi data user dan data restoran
     context = {
@@ -106,6 +108,22 @@ def show_main(request):
 
     # Render halaman main.html dengan data
     return render(request, 'main.html', context)
+
+def save_to_db(restaurants):
+    """
+    Menyimpan data restoran dari dictionary ke database.
+    """
+    for restaurant_data in restaurants:
+        # Buat atau dapatkan instance Restaurant
+        restaurant, created = Restaurant.objects.get_or_create(name=restaurant_data['name'])
+
+        # Tambahkan menu ke restoran
+        for menu_item in restaurant_data['menu']:
+            Menu.objects.get_or_create(
+                restaurant=restaurant,
+                food_name=menu_item['food_name'],
+                defaults={'price': menu_item['price']}
+            )
 
 def get_restaurants(request):
     # Get all restaurants

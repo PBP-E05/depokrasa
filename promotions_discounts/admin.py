@@ -1,16 +1,5 @@
 from django.contrib import admin
-from .models import Restaurant, Menu, Discount, Promotion, UserFavoriteRestaurant
-
-@admin.register(Restaurant)
-class RestaurantAdmin(admin.ModelAdmin):
-    list_display = ['name']
-    search_fields = ['name']
-
-@admin.register(Menu)
-class MenuAdmin(admin.ModelAdmin):
-    list_display = ['food_name', 'restaurant', 'price']
-    search_fields = ['food_name', 'restaurant__name']
-    list_filter = ['restaurant']
+from .models import Discount, Promotion, UserFavoriteRestaurant
 
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
