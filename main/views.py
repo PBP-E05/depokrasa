@@ -151,6 +151,10 @@ def create_news_ajax(request):
             icon_path = default_storage.save(f'featured_news/icons/{icon_image.name}', icon_image)
             grand_path = default_storage.save(f'featured_news/images/{grand_image.name}', grand_image)
 
+            time_added = request.POST.get('time_added')
+            if not time_added:
+                time_added = datetime.now()
+
             news = FeaturedNews.objects.create(
                 title=title,
                 content=content,
@@ -160,7 +164,7 @@ def create_news_ajax(request):
                 calories=calories,
                 icon_image=icon_path,
                 grand_image=grand_path,
-                time_added=request.POST.get('time_added'),
+                time_added=time_added,
             )
 
             return JsonResponse({
@@ -215,6 +219,8 @@ def create_news(request):
 
             if time_added:
                 time_added = datetime.strptime(time_added, '%Y-%m-%dT%H:%M:%S.%f')
+            else:
+                time_added = datetime.now()
             if created_at:
                 created_at = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%S.%f')
             if updated_at:
@@ -308,17 +314,17 @@ def edit_news(request, id):
     
 @csrf_exempt
 def delete_news(request, id):
-    if request.method == 'DELETE':
-        try:
-            news = get_object_or_404(FeaturedNews, pk=id)
-            news.delete()
-            return JsonResponse({'status': 'success', 'message': 'News deleted successfully'}, status=200)
-        except FeaturedNews.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'News not found'}, status=404)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+    # if request.method == 'DELETE':
+    try:
+        news = get_object_or_404(FeaturedNews, pk=id)
+        news.delete()
+        return JsonResponse({'status': 'success', 'message': 'News deleted successfully'}, status=200)
+    except FeaturedNews.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'News not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    # else:
+    #     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 @csrf_exempt
 def add_to_wishlist(request):
