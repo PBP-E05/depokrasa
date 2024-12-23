@@ -15,7 +15,9 @@ from django.http import JsonResponse
 from .models import Restaurant, Menu
 import json
 from django.shortcuts import render
-import os;
+import os
+import datetime
+from datetime import datetime  # Add this line
 
 @csrf_exempt
 @login_required(login_url='authentication:login_user')
@@ -322,8 +324,9 @@ def delete_news(request, id):
 def add_to_wishlist(request):
     if request.method == 'POST':
         user = request.user
-        product_id = request.POST.get('product_id')
-        product = get_object_or_404(Menu, id=product_id)
+        data = json.loads(request.body)
+        product_name = data.get('name')
+        product = get_object_or_404(Menu, food_name=product_name)
 
         if Wishlist.objects.filter(user=user, product=product).exists():
             return JsonResponse({'status': 'error', 'message': 'Item already in wishlist'}, status=400)
@@ -331,7 +334,7 @@ def add_to_wishlist(request):
         wishlist_item = Wishlist(user=user, product=product)
         wishlist_item.save()
 
-        return JsonResponse({'status': 'success', 'message': 'Item added to wishlist'})
+        return JsonResponse({'status': 'success', 'message': f'Item {product_name} added to wishlist'})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
@@ -341,9 +344,7 @@ def get_wishlist(request):
     wishlist_items = Wishlist.objects.filter(user=user).select_related('product')
     wishlist_data = [
         {
-            'id': item.product.id,
-            'food_name': item.product.food_name,
-            'price': item.product.price
+            'name': item.product.food_name
         }
         for item in wishlist_items
     ]
@@ -353,13 +354,14 @@ def get_wishlist(request):
 def delete_from_wishlist(request):
     if request.method == 'DELETE':
         user = request.user
-        product_id = json.loads(request.body).get('product_id')
-        product = get_object_or_404(Menu, id=product_id)
+        data = json.loads(request.body)
+        product_name = data.get('name')
+        product = get_object_or_404(Menu, food_name=product_name)
 
         wishlist_item = Wishlist.objects.filter(user=user, product=product).first()
         if wishlist_item:
             wishlist_item.delete()
-            return JsonResponse({'status': 'success', 'message': 'Item removed from wishlist'}, status=200)
+            return JsonResponse({'status': 'success', 'message': f'Item {product_name} removed from wishlist'}, status=200)
         else:
             return JsonResponse({'status': 'error', 'message': 'Item not found in wishlist'}, status=404)
 
