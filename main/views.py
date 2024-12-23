@@ -16,27 +16,43 @@ from .models import Restaurant, Menu
 import json
 from django.shortcuts import render
 import os;
+from datetime import datetime
 
 @csrf_exempt
 @login_required(login_url='authentication:login_user')
 def insert_restaurant_data(request):
     if request.method == "POST":
         try:
+            # Parsing JSON dari request body
             data = json.loads(request.body)
-            restaurant = Restaurant.objects.create(name=data['name'])
+
+            # Validasi apakah field "name" dan "menu" ada
+            if not all(key in data for key in ('name', 'menu')):
+                return JsonResponse({'error': 'Missing "name" or "menu" field'}, status=400)
+
+            # Buat instance Restaurant
+            restaurant, created = Restaurant.objects.get_or_create(name=data['name'])
+
+            # Tambahkan menu ke restoran
             for item in data['menu']:
-                Menu.objects.create(
-                    restaurant=restaurant,
-                    food_name=item['food_name'],
-                    price=item['price']
-                )
+                if 'food_name' in item and 'price' in item:
+                    Menu.objects.get_or_create(
+                        restaurant=restaurant,
+                        food_name=item['food_name'],
+                        defaults={'price': item['price']}
+                    )
+                else:
+                    return JsonResponse({'error': 'Invalid menu item format'}, status=400)
+
             return JsonResponse({'message': 'Restaurant and menu added successfully!'}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-def my_template_view(request):
-    return render(request, 'restaurant_app/template.html')
+
 
 @login_required(login_url='authentication:login_user')
 def add_restaurant(request):
@@ -45,25 +61,36 @@ def add_restaurant(request):
             # Parsing JSON data dari request body
             data = json.loads(request.body)
 
-            # Membuat restaurant baru
-            restaurant = Restaurant.objects.create(name=data['name'])
+            # Validasi field JSON
+            if 'name' not in data or 'menu' not in data:
+                return JsonResponse({'error': 'Missing "name" or "menu" field'}, status=400)
 
-            # Menambahkan menu items ke restaurant
+            # Membuat atau mendapatkan restoran baru
+            restaurant, created = Restaurant.objects.get_or_create(name=data['name'])
+
+            # Tambahkan menu items ke restoran
             for item in data['menu']:
-                Menu.objects.create(
-                    restaurant=restaurant,
-                    food_name=item['food_name'],
-                    price=item['price']
-                )
-            
-            # Mengembalikan response sukses
+                if 'food_name' in item and 'price' in item:
+                    Menu.objects.get_or_create(
+                        restaurant=restaurant,
+                        food_name=item['food_name'],
+                        defaults={'price': item['price']}
+                    )
+                else:
+                    return JsonResponse({'error': 'Invalid menu item format'}, status=400)
+
+            # Response sukses
             return JsonResponse({'message': 'Restaurant and menu added successfully!'}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
+def my_template_view(request):
+    return render(request, 'restaurant_app/template.html')
 
 @login_required(login_url='authentication:login_user')
 def show_main(request):
