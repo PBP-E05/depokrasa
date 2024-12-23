@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Discount, Promotion, UserFavoriteRestaurant
+from .models import Discount, Promotion
 
 @admin.register(Discount)
 class DiscountAdmin(admin.ModelAdmin):
